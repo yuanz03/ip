@@ -3,6 +3,7 @@ package shadowbuddy.app;
 import shadowbuddy.services.TaskList;
 import shadowbuddy.taskmodels.Deadline;
 import shadowbuddy.taskmodels.Task;
+import shadowbuddy.taskmodels.Todo;
 
 public class ShadowController {
     protected static final TaskList taskList = new TaskList();
@@ -28,9 +29,9 @@ public class ShadowController {
             handleDeadline(requestDetails);
             break;
         default:
-            Task userTask = new Task(input);
-            taskList.addTask(userTask);
-            System.out.println("\nGot it. I've added this task:\n " + userTask);
+            Task userTodo = new Todo(requestDetails);
+            taskList.addTask(userTodo);
+            System.out.println("\nGot it. I've added this task:\n  " + userTodo);
             System.out.println("Now you have " + taskList.length() + " tasks in the list.\n");
             break;
         }
@@ -58,7 +59,7 @@ public class ShadowController {
 
     private static void handleDeadline(String details) {
         String[] detailsData = details.split(" /by ");
-        Deadline userDeadline = new Deadline(detailsData[0], detailsData[1]);
+        Task userDeadline = new Deadline(detailsData[0], detailsData[1]);
         taskList.addTask(userDeadline);
         System.out.println("\nGot it. I've added this task:\n  " + userDeadline);
         System.out.println("Now you have " + taskList.length() + " tasks in the list.\n");
