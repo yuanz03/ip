@@ -1,6 +1,7 @@
 package shadowbuddy.app;
 
 import shadowbuddy.services.TaskList;
+import shadowbuddy.taskmodels.Deadline;
 import shadowbuddy.taskmodels.Task;
 
 public class ShadowController {
@@ -13,20 +14,24 @@ public class ShadowController {
         }
 
         String[] inputData = input.split(" ");
-        String inputCommand = inputData[0];
-        String inputIndex = inputData.length == 2 ? inputData[1] : " ";
+        String requestType = inputData[0];
+        String requestDetails = input.substring(requestType.length() + 1);
 
-        switch (inputCommand.toLowerCase()) {
+        switch (requestType.toLowerCase()) {
         case "mark":
-            handleMarkingTask(inputIndex);
+            handleMarkingTask(requestDetails);
             break;
         case "unmark":
-            handleUnmarkingTask(inputIndex);
+            handleUnmarkingTask(requestDetails);
+            break;
+        case "deadline":
+            handleDeadline(requestDetails);
             break;
         default:
             Task userTask = new Task(input);
             taskList.addTask(userTask);
-            System.out.println("\nadded: " + input + "\n");
+            System.out.println("\nGot it. I've added this task:\n " + userTask);
+            System.out.println("Now you have " + taskList.length() + " tasks in the list.\n");
             break;
         }
     }
@@ -35,7 +40,7 @@ public class ShadowController {
         try {
             int taskIndex = Integer.parseInt(index);
             taskList.markTask(taskIndex);
-            System.out.println("\nNice! I've marked this task as done:\n " + taskList.getTask(taskIndex) + "\n");
+            System.out.println("\nNice! I've marked this task as done:\n  " + taskList.getTask(taskIndex) + "\n");
         } catch (NumberFormatException exception) {
             System.out.println("Require number after mark command!\n");
         }
@@ -45,9 +50,17 @@ public class ShadowController {
         try {
             int taskIndex = Integer.parseInt(index);
             taskList.unmarkTask(taskIndex);
-            System.out.println("\nOK, I've marked this task as not done yet:\n " + taskList.getTask(taskIndex) + "\n");
+            System.out.println("\nOK, I've marked this task as not done:\n  " + taskList.getTask(taskIndex) + "\n");
         } catch (NumberFormatException exception) {
             System.out.println("Require number after unmark command!\n");
         }
+    }
+
+    private static void handleDeadline(String details) {
+        String[] detailsData = details.split(" /by ");
+        Deadline userDeadline = new Deadline(detailsData[0], detailsData[1]);
+        taskList.addTask(userDeadline);
+        System.out.println("\nGot it. I've added this task:\n  " + userDeadline);
+        System.out.println("Now you have " + taskList.length() + " tasks in the list.\n");
     }
 }

@@ -12,19 +12,23 @@ public class TaskList {
     }
 
     public void addTask(Task task) {
-        storage.add(task);
+        this.storage.add(task);
     }
 
     public void markTask(int index) {
-        storage.get(index - 1).markAsDone();
+        this.storage.get(index - 1).markAsDone();
     }
 
     public void unmarkTask(int index) {
-       storage.get(index - 1).markAsNotDone();
+       this.storage.get(index - 1).markAsNotDone();
     }
 
     public Task getTask(int index) {
-        return storage.get(index - 1);
+        return this.storage.get(index - 1);
+    }
+
+    public int length() {
+        return this.storage.size();
     }
 
     @Override
