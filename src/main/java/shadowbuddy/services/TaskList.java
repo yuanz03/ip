@@ -1,8 +1,8 @@
 package shadowbuddy.services;
 
-import shadowbuddy.taskmodels.Task;
-
 import java.util.ArrayList;
+
+import shadowbuddy.taskmodels.Task;
 
 public class TaskList {
     protected final ArrayList<Task> storage;
