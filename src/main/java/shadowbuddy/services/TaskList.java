@@ -1,4 +1,6 @@
-package shadowbuddy.features;
+package shadowbuddy.services;
+
+import shadowbuddy.taskmodels.Task;
 
 import java.util.ArrayList;
 

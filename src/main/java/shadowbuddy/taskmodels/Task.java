@@ -1,4 +1,4 @@
-package shadowbuddy.features;
+package shadowbuddy.taskmodels;
 
 public class Task {
     protected String description;

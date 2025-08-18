@@ -1,9 +1,9 @@
-package shadowbuddy.ui;
+package shadowbuddy.app;
 
 import java.util.Scanner;
 
-import shadowbuddy.features.Task;
-import shadowbuddy.features.TaskList;
+import shadowbuddy.taskmodels.Task;
+import shadowbuddy.services.TaskList;
 
 public class Shadow {
     protected static final TaskList taskList = new TaskList();
