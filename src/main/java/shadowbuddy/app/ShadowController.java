@@ -15,10 +15,12 @@ public class ShadowController {
             return;
         }
 
+        // Code reuse
         String[] inputData = input.split(" ");
         String requestType = inputData[0];
         String requestDetails = input.substring(requestType.length() + 1);
 
+        // Code reuse
         switch (requestType.toLowerCase()) {
         case "mark":
             toggleTaskStatus(requestDetails, true);
@@ -38,6 +40,7 @@ public class ShadowController {
         }
     }
 
+    // Code reuse
     private static void toggleTaskStatus(String index, boolean flag) {
         int taskIndex = stringToIndex(index);
 
@@ -71,6 +74,7 @@ public class ShadowController {
         taskConfirmationMessage(userTodo);
     }
 
+    // Code reuse
     private static int stringToIndex(String index) {
         try {
             return Integer.parseInt(index);
