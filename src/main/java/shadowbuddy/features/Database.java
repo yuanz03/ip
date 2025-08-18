@@ -1,3 +1,5 @@
+package shadowbuddy.features;
+
 import java.util.ArrayList;
 
 public class Database {

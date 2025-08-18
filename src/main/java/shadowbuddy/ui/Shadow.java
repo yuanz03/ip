@@ -1,4 +1,8 @@
+package shadowbuddy.ui;
+
 import java.util.Scanner;
+
+import shadowbuddy.features.Database;
 
 public class Shadow {
     private static final Database database = new Database();
