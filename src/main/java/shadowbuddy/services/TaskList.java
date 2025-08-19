@@ -15,6 +15,10 @@ public class TaskList {
         this.storage.add(task);
     }
 
+    public Task deleteTask(int index) {
+        return this.storage.remove(index - 1);
+    }
+
     public void markTask(int index) {
         this.storage.get(index - 1).markAsDone();
     }

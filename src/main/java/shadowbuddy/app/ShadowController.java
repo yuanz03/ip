@@ -30,6 +30,9 @@ public class ShadowController {
             case "unmark":
                 toggleTaskStatus(requestDetails, false);
                 break;
+            case "delete":
+                handleDeleteTask(requestDetails);
+                break;
             case "deadline":
                 createDeadline(requestDetails);
                 break;
@@ -59,6 +62,13 @@ public class ShadowController {
             taskList.unmarkTask(taskIndex);
             System.out.println("\nOK, I've marked this task as not done:\n  " + taskList.getTask(taskIndex) + "\n");
         }
+    }
+
+    private static void handleDeleteTask(String index) {
+        int taskIndex = stringToIndex(index);
+        Task deletedTask = taskList.deleteTask(taskIndex);
+        System.out.println("\nNoted. I've removed this task:\n  " + deletedTask);
+        System.out.println("Now you have " + taskList.length() + " tasks in the list.\n");
     }
 
     private static void createDeadline(String details) throws ShadowException {
