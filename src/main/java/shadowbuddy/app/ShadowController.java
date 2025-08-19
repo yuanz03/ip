@@ -1,5 +1,6 @@
 package shadowbuddy.app;
 
+import shadowbuddy.services.ShadowException;
 import shadowbuddy.services.TaskList;
 import shadowbuddy.taskmodels.Deadline;
 import shadowbuddy.taskmodels.Event;
@@ -18,25 +19,32 @@ public class ShadowController {
         // Code reuse
         String[] inputData = input.split(" ");
         String requestType = inputData[0];
-        String requestDetails = input.substring(requestType.length() + 1);
+        String requestDetails = inputData.length > 1 ? input.substring(requestType.length() + 1) : "";
 
-        // Code reuse
-        switch (requestType.toLowerCase()) {
-        case "mark":
-            toggleTaskStatus(requestDetails, true);
-            break;
-        case "unmark":
-            toggleTaskStatus(requestDetails, false);
-            break;
-        case "deadline":
-            createDeadline(requestDetails);
-            break;
-        case "event":
-            createEvent(requestDetails);
-            break;
-        default:
-            createTodo(requestDetails);
-            break;
+        try {
+            // Code reuse
+            switch (requestType.toLowerCase()) {
+            case "mark":
+                toggleTaskStatus(requestDetails, true);
+                break;
+            case "unmark":
+                toggleTaskStatus(requestDetails, false);
+                break;
+            case "deadline":
+                createDeadline(requestDetails);
+                break;
+            case "event":
+                createEvent(requestDetails);
+                break;
+            case "todo":
+                createTodo(requestDetails);
+                break;
+            default:
+                throw new ShadowException("Unknown request! Try one of these commands: list, mark, unmark, todo, "
+                        + "delete, event, or deadline, and I'll handle it for you.\n");
+            }
+        } catch (ShadowException se) {
+            System.out.println("\n" + se.getMessage());
         }
     }
 
@@ -53,14 +61,22 @@ public class ShadowController {
         }
     }
 
-    private static void createDeadline(String details) {
+    private static void createDeadline(String details) throws ShadowException {
+        if (details.isEmpty()) {
+            throw new ShadowException("Invalid request! Please provide a description for your deadline.\n");
+        }
+
         String[] deadlineDetails = details.split(" /by ");
         Task userDeadline = new Deadline(deadlineDetails[0], deadlineDetails[1]);
         taskList.addTask(userDeadline);
         taskConfirmationMessage(userDeadline);
     }
 
-    private static void createEvent(String details) {
+    private static void createEvent(String details) throws ShadowException {
+        if (details.isEmpty()) {
+            throw new ShadowException("Invalid request! Please provide a description for your event.\n");
+        }
+
         String[] eventDetails = details.split(" /from ");
         String[] eventTimings = eventDetails[1].split(" /to ");
         Task userEvent = new Event(eventDetails[0], eventTimings[0], eventTimings[1]);
@@ -68,7 +84,11 @@ public class ShadowController {
         taskConfirmationMessage(userEvent);
     }
 
-    private static void createTodo(String details) {
+    private static void createTodo(String details) throws ShadowException {
+        if (details.isEmpty()) {
+            throw new ShadowException("Invalid request! Please provide a description for your todo.\n");
+        }
+
         Task userTodo = new Todo(details);
         taskList.addTask(userTodo);
         taskConfirmationMessage(userTodo);
@@ -78,7 +98,7 @@ public class ShadowController {
     private static int stringToIndex(String index) {
         try {
             return Integer.parseInt(index);
-        } catch (NumberFormatException exception) {
+        } catch (NumberFormatException nfe) {
             return -1;
         }
     }
