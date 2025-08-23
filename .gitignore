@@ -21,4 +21,4 @@ bin/
 text-ui-test/EXPECTED-UNIX.TXT
 
 # TaskList database file
-src/main/java/shadowbuddy/app/database.txt
+src/main/java/shadowbuddy/storage/database.txt
