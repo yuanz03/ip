@@ -7,8 +7,12 @@ import shadowbuddy.taskmodels.Event;
 import shadowbuddy.taskmodels.Task;
 import shadowbuddy.taskmodels.Todo;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class ShadowController {
     protected static final TaskList taskList = new TaskList();
+    protected static final String filePath = "./shadowbuddy/app/database.txt";
 
     public void run(String input) {
         if (input.equalsIgnoreCase("list")) {
@@ -48,6 +52,14 @@ public class ShadowController {
             }
         } catch (ShadowException se) {
             System.out.println("\n" + se.getMessage());
+        }
+
+        try {
+            FileWriter fw = new FileWriter(filePath);
+            fw.write(String.valueOf(taskList));
+            fw.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 
