@@ -14,7 +14,7 @@ import java.io.IOException;
 public class ShadowUi {
     protected final TaskList taskList;
     protected final ShadowStorage storage;
-    protected final ShadowCommand userCommand;
+    protected ShadowCommand userCommand;
 
     public ShadowUi(ShadowStorage storage) {
         this.storage = storage;
@@ -35,8 +35,8 @@ public class ShadowUi {
         try {
             int taskIndex = userCommand.taskIndex;
             String taskDescription = userCommand.taskDescription;
-
-            switch (userCommand.taskType) {
+            // Code reuse for switch structure
+            switch (userCommand.commandType) {
             case LIST:
                 System.out.println("\nHere are the tasks in your list:\n" + this.taskList);
                 break;
@@ -70,6 +70,8 @@ public class ShadowUi {
                 this.taskList.addTask(userEvent);
                 taskConfirmationMessage(userEvent);
                 break;
+            case UNKNOWN:
+                // Fallthrough
             default:
                 throw new ShadowException("Unknown request! Try one of these commands: list, mark, unmark, todo, "
                         + "delete, event, or deadline, and I'll handle it for you.\n");

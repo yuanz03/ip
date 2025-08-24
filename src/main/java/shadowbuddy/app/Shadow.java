@@ -12,12 +12,12 @@ public class Shadow {
 
         Scanner inputScanner = new Scanner(System.in);
         ShadowStorage taskStorage = new ShadowStorage();
-        ShadowController chatbotController = new ShadowController(taskStorage);
+        ShadowUi chatbotUi = new ShadowUi(taskStorage);
 
         try {
             taskStorage.createDatabase();
             taskStorage.printDatabase();
-            chatbotController.loadDatabase();
+            chatbotUi.loadDatabase();
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
@@ -28,7 +28,7 @@ public class Shadow {
             if (userInput.equalsIgnoreCase("bye")) {
                 break;
             }
-            chatbotController.run(userInput);
+            chatbotUi.run(userInput);
         }
 
         System.out.println("\nGoodbye! I'll be here if you need anything else!");
