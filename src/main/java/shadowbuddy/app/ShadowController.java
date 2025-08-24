@@ -60,7 +60,7 @@ public class ShadowController {
         }
 
         try {
-            this.storage.writeToDatabase(String.valueOf(this.taskList));
+            this.storage.writeToDatabase(this.taskList);
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
