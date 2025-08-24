@@ -101,10 +101,7 @@ public class ShadowController {
         }
 
         String[] deadlineDetails = details.split(" /by ");
-        DateTimeFormatter deadlineInputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm"); // code reuse
-        DateTimeFormatter deadlineOutputFormatter = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
-        LocalDateTime deadlineDueDate = LocalDateTime.parse(deadlineDetails[1], deadlineInputFormatter);
-        String formattedDueDate = deadlineDueDate.format(deadlineOutputFormatter);
+        String formattedDueDate = formatTaskDateTime(deadlineDetails[1]);
 
         Task userDeadline = new Deadline(deadlineDetails[0], formattedDueDate);
         this.taskList.addTask(userDeadline);
@@ -118,7 +115,10 @@ public class ShadowController {
 
         String[] eventDetails = details.split(" /from ");
         String[] eventTimings = eventDetails[1].split(" /to ");
-        Task userEvent = new Event(eventDetails[0], eventTimings[0], eventTimings[1]);
+        String formattedStartDate = formatTaskDateTime(eventTimings[0]);
+        String formattedEndDate = formatTaskDateTime(eventTimings[1]);
+
+        Task userEvent = new Event(eventDetails[0], formattedStartDate, formattedEndDate);
         this.taskList.addTask(userEvent);
         taskConfirmationMessage(userEvent);
     }
@@ -133,8 +133,15 @@ public class ShadowController {
         taskConfirmationMessage(userTodo);
     }
 
+    private String formatTaskDateTime(String timestamp) {
+        DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm"); // code reuse
+        DateTimeFormatter taskOutputFormatter = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
+        LocalDateTime taskTimestamp = LocalDateTime.parse(timestamp, taskInputFormatter);
+        return taskTimestamp.format(taskOutputFormatter);
+    }
+
     // Code reuse
-    private static int stringToIndex(String index) {
+    private int stringToIndex(String index) {
         try {
             return Integer.parseInt(index);
         } catch (NumberFormatException exception) {
