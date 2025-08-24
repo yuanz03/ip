@@ -1,7 +1,7 @@
 package shadowbuddy.app;
 
 import shadowbuddy.services.ShadowException;
-import shadowbuddy.services.TaskList;
+import shadowbuddy.taskmodels.TaskList;
 import shadowbuddy.storage.ShadowStorage;
 import shadowbuddy.taskmodels.Deadline;
 import shadowbuddy.taskmodels.Event;
