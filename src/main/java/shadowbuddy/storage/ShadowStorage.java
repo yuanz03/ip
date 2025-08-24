@@ -16,8 +16,8 @@ public class ShadowStorage {
     protected final String filePath;
     protected final File databaseFile;
 
-    public ShadowStorage() {
-        this.filePath = "shadowbuddy/storage/database.txt";
+    public ShadowStorage(String filePath) {
+        this.filePath = filePath;
         this.databaseFile = new File(this.filePath);
     }
 
@@ -105,8 +105,8 @@ public class ShadowStorage {
         } else if (task instanceof Deadline deadline) {
             return "D | " + taskStatus + " | " + deadline.getDescription() + " | " + deadline.getDueDate();
         } else if (task instanceof Event event) {
-            return "E | " + taskStatus + " | " + event.getDescription() +  " | " + event.getStartTime()
-                    + "-" + event.getEndTime();
+            return "E | " + taskStatus + " | " + event.getDescription() +  " | " + event.getStartDate()
+                    + "-" + event.getEndDate();
         } else {
             return "";
         }

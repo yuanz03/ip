@@ -1,25 +1,25 @@
 package shadowbuddy.taskmodels;
 
 public class Event extends Task {
-    protected String startTime;
-    protected String endTime;
+    protected String startDate;
+    protected String endDate;
 
-    public Event(String description, String startTime, String endTime) {
+    public Event(String description, String startDate, String endDate) {
         super(description);
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-    public String getStartTime() {
-        return this.startTime;
+    public String getStartDate() {
+        return this.startDate;
     }
 
-    public String getEndTime() {
-        return this.endTime;
+    public String getEndDate() {
+        return this.endDate;
     }
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + this.startTime + " to: " + this.endTime + ")";
+        return "[E]" + super.toString() + " (from: " + this.startDate + " to: " + this.endDate + ")";
     }
 }
