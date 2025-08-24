@@ -16,8 +16,8 @@ public class ShadowStorage {
     protected final String filePath;
     protected final File databaseFile;
 
-    public ShadowStorage() {
-        this.filePath = "shadowbuddy/storage/database.txt";
+    public ShadowStorage(String filePath) {
+        this.filePath = filePath;
         this.databaseFile = new File(this.filePath);
     }
 

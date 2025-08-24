@@ -25,7 +25,16 @@ public class ShadowUi {
         this.storage.loadDatabase(this.taskList);
     }
 
-    public void run(String input) {
+    public void greetUsers() {
+        System.out.println("Hi, I'm Shadow, your personal assistant!");
+        System.out.println("What can I help you with today?\n");
+    }
+
+    public void sayGoodbye() {
+        System.out.println("\nGoodbye! I'll be here if you need anything else!");
+    }
+
+    public void handleInput(String input) {
         try {
             userCommand = ShadowParser.parse(input);
         } catch (ShadowException exception) {
