@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import shadowbuddy.services.TaskList;
+import shadowbuddy.taskmodels.TaskList;
 import shadowbuddy.taskmodels.Deadline;
 import shadowbuddy.taskmodels.Event;
 import shadowbuddy.taskmodels.Task;
