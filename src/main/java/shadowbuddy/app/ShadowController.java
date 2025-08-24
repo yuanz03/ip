@@ -2,6 +2,8 @@ package shadowbuddy.app;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.services.TaskList;
@@ -99,7 +101,12 @@ public class ShadowController {
         }
 
         String[] deadlineDetails = details.split(" /by ");
-        Task userDeadline = new Deadline(deadlineDetails[0], deadlineDetails[1]);
+        DateTimeFormatter deadlineInputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm"); // code reuse
+        DateTimeFormatter deadlineOutputFormatter = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
+        LocalDateTime deadlineDueDate = LocalDateTime.parse(deadlineDetails[1], deadlineInputFormatter);
+        String formattedDueDate = deadlineDueDate.format(deadlineOutputFormatter);
+
+        Task userDeadline = new Deadline(deadlineDetails[0], formattedDueDate);
         this.taskList.addTask(userDeadline);
         taskConfirmationMessage(userDeadline);
     }
