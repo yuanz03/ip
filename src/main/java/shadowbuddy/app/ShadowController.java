@@ -1,18 +1,32 @@
 package shadowbuddy.app;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.services.TaskList;
+import shadowbuddy.storage.ShadowStorage;
 import shadowbuddy.taskmodels.Deadline;
 import shadowbuddy.taskmodels.Event;
 import shadowbuddy.taskmodels.Task;
 import shadowbuddy.taskmodels.Todo;
 
 public class ShadowController {
-    protected static final TaskList taskList = new TaskList();
+    protected final TaskList taskList;
+    protected final ShadowStorage storage;
+
+    public ShadowController(ShadowStorage storage) {
+        this.storage = storage;
+        this.taskList = new TaskList();
+    }
+
+    public void loadDatabase() throws FileNotFoundException {
+        this.storage.loadDatabase(this.taskList);
+    }
 
     public void run(String input) {
         if (input.equalsIgnoreCase("list")) {
-            System.out.println("\nHere are the tasks in your list:\n" + taskList);
+            System.out.println("\nHere are the tasks in your list:\n" + this.taskList);
             return;
         }
 
@@ -46,43 +60,51 @@ public class ShadowController {
                 throw new ShadowException("Unknown request! Try one of these commands: list, mark, unmark, todo, "
                         + "delete, event, or deadline, and I'll handle it for you.\n");
             }
-        } catch (ShadowException se) {
-            System.out.println("\n" + se.getMessage());
+        } catch (ShadowException exception) {
+            System.out.println("\n" + exception.getMessage());
+        }
+
+        try {
+            this.storage.writeToDatabase(this.taskList);
+        } catch (IOException exception) {
+            System.out.println(exception.getMessage());
         }
     }
 
     // Code reuse
-    private static void toggleTaskStatus(String index, boolean flag) {
+    private void toggleTaskStatus(String index, boolean flag) {
         int taskIndex = stringToIndex(index);
 
         if (flag) {
-            taskList.markTask(taskIndex);
-            System.out.println("\nNice! I've marked this task as done:\n  " + taskList.getTask(taskIndex) + "\n");
+            this.taskList.markTask(taskIndex);
+            System.out.println("\nNice! I've marked this task as done:\n  "
+                    + this.taskList.getTask(taskIndex) + "\n");
         } else {
-            taskList.unmarkTask(taskIndex);
-            System.out.println("\nOK, I've marked this task as not done:\n  " + taskList.getTask(taskIndex) + "\n");
+            this.taskList.unmarkTask(taskIndex);
+            System.out.println("\nOK, I've marked this task as not done:\n  "
+                    + this.taskList.getTask(taskIndex) + "\n");
         }
     }
 
-    private static void handleDeleteTask(String index) {
+    private void handleDeleteTask(String index) {
         int taskIndex = stringToIndex(index);
-        Task deletedTask = taskList.deleteTask(taskIndex);
+        Task deletedTask = this.taskList.deleteTask(taskIndex);
         System.out.println("\nNoted. I've removed this task:\n  " + deletedTask);
-        System.out.println("Now you have " + taskList.length() + " tasks in the list.\n");
+        System.out.println("Now you have " + this.taskList.length() + " tasks in the list.\n");
     }
 
-    private static void createDeadline(String details) throws ShadowException {
+    private void createDeadline(String details) throws ShadowException {
         if (details.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your deadline.\n");
         }
 
         String[] deadlineDetails = details.split(" /by ");
         Task userDeadline = new Deadline(deadlineDetails[0], deadlineDetails[1]);
-        taskList.addTask(userDeadline);
+        this.taskList.addTask(userDeadline);
         taskConfirmationMessage(userDeadline);
     }
 
-    private static void createEvent(String details) throws ShadowException {
+    private void createEvent(String details) throws ShadowException {
         if (details.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your event.\n");
         }
@@ -90,17 +112,17 @@ public class ShadowController {
         String[] eventDetails = details.split(" /from ");
         String[] eventTimings = eventDetails[1].split(" /to ");
         Task userEvent = new Event(eventDetails[0], eventTimings[0], eventTimings[1]);
-        taskList.addTask(userEvent);
+        this.taskList.addTask(userEvent);
         taskConfirmationMessage(userEvent);
     }
 
-    private static void createTodo(String details) throws ShadowException {
+    private void createTodo(String details) throws ShadowException {
         if (details.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your todo.\n");
         }
 
         Task userTodo = new Todo(details);
-        taskList.addTask(userTodo);
+        this.taskList.addTask(userTodo);
         taskConfirmationMessage(userTodo);
     }
 
@@ -108,13 +130,13 @@ public class ShadowController {
     private static int stringToIndex(String index) {
         try {
             return Integer.parseInt(index);
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException exception) {
             return -1;
         }
     }
 
-    private static void taskConfirmationMessage(Task task) {
+    private void taskConfirmationMessage(Task task) {
         System.out.println("\nGot it. I've added this task:\n  " + task);
-        System.out.println("Now you have " + taskList.length() + " tasks in the list.\n");
+        System.out.println("Now you have " + this.taskList.length() + " tasks in the list.\n");
     }
 }
