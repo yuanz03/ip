@@ -1,5 +1,6 @@
 package shadowbuddy.app;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import shadowbuddy.services.ShadowException;
@@ -17,6 +18,10 @@ public class ShadowController {
     public ShadowController(ShadowStorage storage) {
         this.storage = storage;
         this.taskList = new TaskList();
+    }
+
+    public void loadDatabase() throws FileNotFoundException {
+        this.storage.loadDatabase(this.taskList);
     }
 
     public void run(String input) {

@@ -17,6 +17,7 @@ public class Shadow {
         try {
             taskStorage.createDatabase();
             taskStorage.printDatabase();
+            chatbotController.loadDatabase();
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }

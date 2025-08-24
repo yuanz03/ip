@@ -42,6 +42,7 @@ public class ShadowStorage {
         while (fileScanner.hasNextLine()) {
             System.out.println(fileScanner.nextLine());
         }
+        System.out.println();
     }
 
     public void writeToDatabase(TaskList taskList) throws IOException {
@@ -51,6 +52,49 @@ public class ShadowStorage {
             taskWriter.write(formatTask(task) + "\n");
         }
         taskWriter.close();
+    }
+
+    public void loadDatabase(TaskList taskList) throws FileNotFoundException {
+        if (!this.databaseFile.exists()) {
+            return;
+        }
+
+        Scanner fileScanner = new Scanner(this.databaseFile);
+        while (fileScanner.hasNextLine()) {
+            String[] taskData = fileScanner.nextLine().split("\\|"); // code reuse
+            for (int i = 0; i < taskData.length; i++) {
+                taskData[i] = taskData[i].trim();
+            }
+            Task currentTask = getTask(taskData);
+            taskList.addTask(currentTask);
+        }
+    }
+
+    private Task getTask(String[] taskData) {
+        String taskType = taskData[0];
+        boolean isTaskDone = taskData[1].equals("1");
+        String taskDescription = taskData[2];
+        Task currentTask = new Task("");
+
+        switch (taskType) {
+        case "T":
+            currentTask = new Todo(taskDescription);
+            break;
+        case "D":
+            currentTask = new Deadline(taskDescription, taskData[3]);
+            break;
+        case "E":
+            String[] eventTimings = taskData[3].split("-");
+            currentTask = new Event(taskDescription, eventTimings[0], eventTimings[1]);
+            break;
+        default:
+            break;
+        }
+
+        if (isTaskDone) {
+            currentTask.markAsDone();
+        }
+        return currentTask;
     }
 
     private String formatTask(Task task) {
