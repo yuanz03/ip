@@ -1,60 +1,52 @@
 package shadowbuddy.app;
 
-import org.junit.jupiter.api.Test;
-import shadowbuddy.services.ShadowException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
+
+import shadowbuddy.services.ShadowException;
 
 public class ShadowParserTest {
     @Test
     public void parse_validListCommand() throws ShadowException {
-        String userInput = "list";
-        ShadowCommand userCommand = ShadowParser.parse(userInput);
+        ShadowCommand userCommand = ShadowParser.parse("list");
         assertEquals(ShadowCommand.CommandType.LIST, userCommand.commandType);
     }
 
     @Test
     public void parse_validMarkCommand() throws ShadowException {
-        String userInput = "mark 3";
-        ShadowCommand userCommand = ShadowParser.parse(userInput);
-
+        ShadowCommand userCommand = ShadowParser.parse("mark 3");
         assertEquals(ShadowCommand.CommandType.MARK, userCommand.commandType);
         assertEquals(3, userCommand.taskIndex);
     }
 
     @Test
     public void parse_validUnmarkCommand() throws ShadowException {
-        String userInput = "unmark 4";
-        ShadowCommand userCommand = ShadowParser.parse(userInput);
-
+        ShadowCommand userCommand = ShadowParser.parse("unmark 4");
         assertEquals(ShadowCommand.CommandType.UNMARK, userCommand.commandType);
         assertEquals(4, userCommand.taskIndex);
     }
 
     @Test
     public void parse_validDeleteCommand() throws ShadowException {
-        String userInput = "delete 2";
-        ShadowCommand userCommand = ShadowParser.parse(userInput);
-
+        ShadowCommand userCommand = ShadowParser.parse("delete 2");
         assertEquals(ShadowCommand.CommandType.DELETE, userCommand.commandType);
         assertEquals(2, userCommand.taskIndex);
     }
 
     @Test
     public void parse_validTodoCommand() throws ShadowException {
-        String userInput = "todo return book";
-        ShadowCommand userCommand = ShadowParser.parse(userInput);
-
+        ShadowCommand userCommand = ShadowParser.parse("todo return book");
         assertEquals(ShadowCommand.CommandType.TODO, userCommand.commandType);
         assertEquals("return book", userCommand.taskDescription);
     }
 
     @Test
     public void parse_emptyTodo_exceptionThrown() {
-        String userInput = "todo";
         try {
-            ShadowCommand userCommand = ShadowParser.parse(userInput);
-            assertEquals(ShadowCommand.CommandType.TODO, userCommand.commandType);
+            assertEquals(ShadowCommand.CommandType.TODO, ShadowParser.parse("todo").commandType);
+            fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid request! Please provide a description for your todo.\n",
                     exception.getMessage());
@@ -63,9 +55,7 @@ public class ShadowParserTest {
 
     @Test
     public void parse_validDeadlineCommand() throws ShadowException {
-        String userInput = "deadline buy book /by 2/12/2025 1800";
-        ShadowCommand userCommand = ShadowParser.parse(userInput);
-
+        ShadowCommand userCommand = ShadowParser.parse("deadline buy book /by 2/12/2025 1800");
         assertEquals(ShadowCommand.CommandType.DEADLINE, userCommand.commandType);
         assertEquals("buy book", userCommand.taskDescription);
         assertEquals("Dec 2 2025 18:00", userCommand.dueDate);
@@ -73,10 +63,9 @@ public class ShadowParserTest {
 
     @Test
     public void parse_emptyDeadline_exceptionThrown() {
-        String userInput = "deadline";
         try {
-            ShadowCommand userCommand = ShadowParser.parse(userInput);
-            assertEquals(ShadowCommand.CommandType.DEADLINE, userCommand.commandType);
+            assertEquals(ShadowCommand.CommandType.DEADLINE, ShadowParser.parse("deadline").commandType);
+            fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid request! Please provide a description for your deadline.\n",
                     exception.getMessage());
@@ -84,22 +73,55 @@ public class ShadowParserTest {
     }
 
     @Test
-    public void parse_validEventCommand() throws ShadowException {
-        String userInput = "event project meeting /from 4/7/2025 1600 /to 5/7/2025 2100";
-        ShadowCommand userCommand = ShadowParser.parse(userInput);
+    public void parse_invalidDeadlineFormat_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.DEADLINE,
+                    ShadowParser.parse("deadline buy book by 2/12/2025 1800").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid format! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm",
+                    exception.getMessage());
+        }
+    }
 
+    @Test
+    public void parse_missingDeadlineDueDate_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.DEADLINE,
+                    ShadowParser.parse("deadline buy book /by").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Missing due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm",
+                    exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_invalidDeadlineDueDate_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.DEADLINE,
+                    ShadowParser.parse("deadline buy book /by 2/12/2025 6pm").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm",
+                    exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_validEventCommand() throws ShadowException {
+        ShadowCommand userCommand = ShadowParser.parse("event meeting /from 4/7/2025 1600 /to 5/7/2025 2100");
         assertEquals(ShadowCommand.CommandType.EVENT, userCommand.commandType);
-        assertEquals("project meeting", userCommand.taskDescription);
+        assertEquals("meeting", userCommand.taskDescription);
         assertEquals("Jul 4 2025 16:00", userCommand.startDate);
         assertEquals("Jul 5 2025 21:00", userCommand.endDate);
     }
 
     @Test
     public void parse_emptyEvent_exceptionThrown() {
-        String userInput = "event";
         try {
-            ShadowCommand userCommand = ShadowParser.parse(userInput);
-            assertEquals(ShadowCommand.CommandType.EVENT, userCommand.commandType);
+            assertEquals(ShadowCommand.CommandType.EVENT, ShadowParser.parse("event").commandType);
+            fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid request! Please provide a description for your event.\n",
                     exception.getMessage());
@@ -107,9 +129,56 @@ public class ShadowParserTest {
     }
 
     @Test
+    public void parse_invalidEventFormat_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.EVENT,
+                    ShadowParser.parse("event meeting from 4/7/2025 1600 to 5/7/2025 2100").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid format! Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm",
+                    exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_missingEventStartDate_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.EVENT,
+                    ShadowParser.parse("event meeting /from /to 5/7/2025 2100").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Missing start date! "
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_missingEventEndDate_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.EVENT,
+                    ShadowParser.parse("event meeting /from 4/7/2025 1600 /to").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Missing end date! "
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_invalidEventDates_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.EVENT,
+                    ShadowParser.parse("event meeting /from 4/7/2025 4pm /to 7 July 2025 2100").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid start or end date! "
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm", exception.getMessage());
+        }
+    }
+
+    @Test
     public void parse_invalidCommandType() throws ShadowException {
-        String userInput = "plan";
-        ShadowCommand userCommand = ShadowParser.parse(userInput);
+        ShadowCommand userCommand = ShadowParser.parse("plan");
         assertEquals(ShadowCommand.CommandType.UNKNOWN, userCommand.commandType);
     }
 }
