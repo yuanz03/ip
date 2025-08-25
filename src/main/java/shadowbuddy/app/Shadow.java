@@ -38,6 +38,6 @@ public class Shadow {
     }
 
     public static void main(String[] args) {
-        new Shadow("shadowbuddy/storage/database.txt").run();
+        new Shadow("./data/database.txt").run();
     }
 }
