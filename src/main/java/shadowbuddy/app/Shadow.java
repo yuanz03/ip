@@ -6,10 +6,22 @@ import java.util.Scanner;
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
 
+/**
+ * Coordinates the Shadow chatbot's UI, controller, command parser and storage.
+ * The Shadow class is composed of the ShadowUi, ShadowController, ShadowParser, and ShadowStorage components.
+ */
 public class Shadow {
     private final ShadowUi chatbotUi;
     private final ShadowController chatbotController;
 
+    /**
+     * Initializes a Shadow instance with the given file path.
+     * The constructor also initializes the storage, controller, and UI.
+     * The storage sets up the task database (creating it if needed), and then prints it.
+     * The controller then loads the database into the TaskList.
+     *
+     * @param filePath The file path to the task list database file.
+     */
     public Shadow(String filePath) {
         ShadowStorage taskStorage = new ShadowStorage(filePath);
         chatbotController = new ShadowController(taskStorage);
@@ -23,6 +35,11 @@ public class Shadow {
         }
     }
 
+    /**
+     * Executes the main loop which handles user input and commands.
+     * This method greets the user and reads user input until it processes "bye".
+     * Each recognized command is executed by the controller and the output is written to storage.
+     */
     public void run() {
         chatbotUi.greetUsers();
 
@@ -47,6 +64,9 @@ public class Shadow {
         inputScanner.close();
     }
 
+    /**
+     * Main entry point of the Shadow chatbot application, using a predefined storage file path.
+     */
     public static void main(String[] args) {
         new Shadow("./data/database.txt").run();
     }
