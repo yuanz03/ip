@@ -14,7 +14,6 @@ import java.io.IOException;
 public class ShadowController {
     protected final TaskList taskList;
     protected final ShadowStorage storage;
-    protected ShadowCommand userCommand;
 
     public ShadowController(ShadowStorage storage) {
         this.storage = storage;
@@ -42,14 +41,17 @@ public class ShadowController {
             ui.showTaskList(this.taskList);
             break;
         case MARK:
+            validateTaskIndex(taskIndex, this.taskList.length());
             this.taskList.markTask(taskIndex);
             ui.markConfirmationMessage(this.taskList.getTask(taskIndex));
             break;
         case UNMARK:
+            validateTaskIndex(taskIndex, this.taskList.length());
             this.taskList.unmarkTask(taskIndex);
             ui.unmarkConfirmationMessage(this.taskList.getTask(taskIndex));
             break;
         case DELETE:
+            validateTaskIndex(taskIndex, this.taskList.length());
             Task deletedTask = this.taskList.deleteTask(taskIndex);
             ui.deleteConfirmationMessage(deletedTask, this.taskList.length());
             break;
@@ -73,6 +75,14 @@ public class ShadowController {
         default:
             throw new ShadowException("Unknown request! Try one of these commands: list, mark, unmark, todo, "
                     + "delete, event, or deadline, and I'll handle it for you.\n");
+        }
+    }
+
+    private void validateTaskIndex(int taskIndex, int taskCount) throws ShadowException {
+        if (taskCount == 0) {
+            throw new ShadowException("ERROR! Your task list is empty!\n");
+        } else if (taskIndex < 1 || taskIndex > taskCount) {
+            throw new ShadowException("Invalid task index! Please enter a number between 1 and " + taskCount + ".\n");
         }
     }
 

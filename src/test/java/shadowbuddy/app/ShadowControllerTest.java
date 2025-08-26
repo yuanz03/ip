@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import shadowbuddy.services.ShadowException;
 
 public class ShadowControllerTest {
-    private static final ShadowCommand LIST_COMMAND = new ShadowCommand(ShadowCommand.CommandType.LIST);
     private static final ShadowCommand MARK_COMMAND = new ShadowCommand(ShadowCommand.CommandType.MARK, 1);
     private static final ShadowCommand UNMARK_COMMAND = new ShadowCommand(ShadowCommand.CommandType.UNMARK, 1);
     private static final ShadowCommand DELETE_COMMAND = new ShadowCommand(ShadowCommand.CommandType.DELETE, 1);
@@ -78,5 +77,82 @@ public class ShadowControllerTest {
         dummyController.executeCommand(TODO_COMMAND, dummyUi);
         dummyController.executeCommand(DELETE_COMMAND, dummyUi);
         assertEquals(0, dummyController.getTaskList().length());
+    }
+
+    @Test
+    public void execute_emptyTaskList_exceptionThrown() {
+        ShadowUi dummyUi = new ShadowUi();
+        ShadowController dummyController = new ShadowController(null);
+
+        try {
+            dummyController.executeCommand(MARK_COMMAND, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("ERROR! Your task list is empty!\n", exception.getMessage());
+        }
+
+        try {
+            dummyController.executeCommand(UNMARK_COMMAND, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("ERROR! Your task list is empty!\n", exception.getMessage());
+        }
+
+        try {
+            dummyController.executeCommand(DELETE_COMMAND, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("ERROR! Your task list is empty!\n", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void execute_invalidTaskIndex_exceptionThrown() {
+        ShadowUi dummyUi = new ShadowUi();
+        ShadowController dummyController = new ShadowController(null);
+        ShadowCommand invalidMarkCommand = new ShadowCommand(ShadowCommand.CommandType.MARK, 2);
+        ShadowCommand invalidUnmarkCommand = new ShadowCommand(ShadowCommand.CommandType.UNMARK, 3);
+        ShadowCommand invalidDeleteCommand = new ShadowCommand(ShadowCommand.CommandType.DELETE, 4);
+
+        try {
+            dummyController.executeCommand(TODO_COMMAND, dummyUi);
+            dummyController.executeCommand(invalidMarkCommand, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid task index! Please enter a number between 1 and "
+                    + dummyController.getTaskList().length() + ".\n", exception.getMessage());
+        }
+
+        try {
+            dummyController.executeCommand(TODO_COMMAND, dummyUi);
+            dummyController.executeCommand(invalidUnmarkCommand, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid task index! Please enter a number between 1 and "
+                    + dummyController.getTaskList().length() + ".\n", exception.getMessage());
+        }
+
+        try {
+            dummyController.executeCommand(TODO_COMMAND, dummyUi);
+            dummyController.executeCommand(invalidDeleteCommand, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid task index! Please enter a number between 1 and "
+                    + dummyController.getTaskList().length() + ".\n", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void execute_unknownCommand_exceptionThrown() {
+        ShadowUi dummyUi = new ShadowUi();
+        ShadowController dummyController = new ShadowController(null);
+
+        try {
+            dummyController.executeCommand(UNKNOWN_COMMAND, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Unknown request! Try one of these commands: list, mark, unmark, todo, "
+                    + "delete, event, or deadline, and I'll handle it for you.\n", exception.getMessage());
+        }
     }
 }
