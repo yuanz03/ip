@@ -15,7 +15,7 @@ public class ShadowCommand {
 
     /** The type of the user command */
     protected final CommandType commandType;
-    /** Description of the task, if applicable */
+    /** Description of the task */
     protected final String taskDescription;
     /** Due date of the task, if applicable */
     protected final String dueDate;
