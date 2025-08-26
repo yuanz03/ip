@@ -18,6 +18,10 @@ public class ShadowUi {
         System.out.println("\nHere are the tasks in your list:\n" + taskList);
     }
 
+    public void showMatchingTasks(TaskList taskList) {
+        System.out.println("\nHere are the matching tasks in your list:\n" + taskList);
+    }
+
     public void markConfirmationMessage(Task task) {
         System.out.println("\nNice! I've marked this task as done:\n  " + task + "\n");
     }

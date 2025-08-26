@@ -1,7 +1,7 @@
 package shadowbuddy.app;
 
 public class ShadowCommand {
-    public enum CommandType { LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, UNKNOWN } // code reuse
+    public enum CommandType { LIST, MARK, UNMARK, DELETE, FIND, TODO, DEADLINE, EVENT, UNKNOWN } // code reuse
 
     protected final CommandType commandType;
     protected final String taskDescription;

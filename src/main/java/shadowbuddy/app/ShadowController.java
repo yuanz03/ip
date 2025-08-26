@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ShadowController {
-    protected final TaskList taskList;
+    protected TaskList taskList;
     protected final ShadowStorage storage;
 
     public ShadowController(ShadowStorage storage) {
@@ -54,6 +54,10 @@ public class ShadowController {
             validateTaskIndex(taskIndex, this.taskList.length());
             Task deletedTask = this.taskList.deleteTask(taskIndex);
             ui.deleteConfirmationMessage(deletedTask, this.taskList.length());
+            break;
+        case FIND:
+            TaskList matchingTasks = this.taskList.getMatchingTasks(this.taskList, taskDescription);
+            ui.showMatchingTasks(matchingTasks);
             break;
         case TODO:
             Task userTodo = new Todo(taskDescription);

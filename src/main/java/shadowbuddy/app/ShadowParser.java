@@ -25,6 +25,13 @@ public class ShadowParser {
         case "delete":
             int deleteIndex = stringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.DELETE, deleteIndex);
+        case "find":
+            if (requestDetails.isEmpty()) {
+                throw new ShadowException("Invalid request! Please provide a keyword for your find.\n");
+            } else if (inputData.length > 2) {
+                throw new ShadowException("Invalid request! Please provide only ONE keyword for your find.\n");
+            }
+            return new ShadowCommand(ShadowCommand.CommandType.FIND, requestDetails);
         case "todo":
             if (requestDetails.isEmpty()) {
                 throw new ShadowException("Invalid request! Please provide a description for your todo.\n");
