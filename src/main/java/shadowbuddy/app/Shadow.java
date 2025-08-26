@@ -3,18 +3,21 @@ package shadowbuddy.app;
 import java.io.IOException;
 import java.util.Scanner;
 
+import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
 
 public class Shadow {
     private final ShadowUi chatbotUi;
+    private final ShadowController chatbotController;
 
     public Shadow(String filePath) {
         ShadowStorage taskStorage = new ShadowStorage(filePath);
-        chatbotUi = new ShadowUi(taskStorage);
+        chatbotController = new ShadowController(taskStorage);
+        chatbotUi = new ShadowUi();
         try {
             taskStorage.createDatabase();
             taskStorage.printDatabase();
-            chatbotUi.loadDatabase();
+            chatbotController.loadDatabase();
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
@@ -30,7 +33,14 @@ public class Shadow {
             if (userInput.equalsIgnoreCase("bye")) {
                 break;
             }
-            chatbotUi.handleInput(userInput);
+
+            try {
+                ShadowCommand userCommand = chatbotController.handleInput(userInput);
+                chatbotController.executeCommand(userCommand, chatbotUi);
+                chatbotController.writeToDatabase();
+            } catch (ShadowException | IOException exception) {
+                System.out.println(exception.getMessage());
+            }
         }
 
         chatbotUi.sayGoodbye();
