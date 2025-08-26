@@ -43,19 +43,19 @@ public class ShadowParser {
         if (requestDetails.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your deadline.\n");
         } else if (!requestDetails.contains("/by")) {
-            throw new ShadowException("Invalid format! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm");
+            throw new ShadowException("Invalid format! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
         }
 
         String[] deadlineDetails = requestDetails.split("/by");
         if (deadlineDetails.length < 2 || deadlineDetails[1].trim().isEmpty()) {
-            throw new ShadowException("Missing due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm");
+            throw new ShadowException("Missing due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
         }
 
         try {
             String formattedDueDate = formatTaskDateTime(deadlineDetails[1].trim());
             return new ShadowCommand(ShadowCommand.CommandType.DEADLINE, deadlineDetails[0].trim(), formattedDueDate);
         } catch (DateTimeParseException exception) {
-            throw new ShadowException("Invalid due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm");
+            throw new ShadowException("Invalid due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
         }
     }
 
@@ -64,17 +64,17 @@ public class ShadowParser {
             throw new ShadowException("Invalid request! Please provide a description for your event.\n");
         } else if (!requestDetails.contains("/from") || !requestDetails.contains("/to")) {
             throw new ShadowException("Invalid format! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm");
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
         }
 
         String[] eventDetails = requestDetails.split("/from");
         String[] eventTimings = eventDetails[1].split("/to");
         if (eventTimings[0].trim().isEmpty()) {
             throw new ShadowException("Missing start date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm");
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
         } else if (eventTimings.length < 2 || eventTimings[1].trim().isEmpty()) {
             throw new ShadowException("Missing end date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm");
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
         }
 
         try {
@@ -84,7 +84,7 @@ public class ShadowParser {
                     formattedStartDate, formattedEndDate);
         } catch (DateTimeParseException exception) {
             throw new ShadowException("Invalid start or end date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm");
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
         }
     }
 
