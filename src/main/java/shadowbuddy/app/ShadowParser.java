@@ -6,7 +6,21 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Parses raw user input into ShadowCommand objects used by the controller.
+ * The ShadowParser class interprets user commands defined in ShadowCommand, validates input,
+ * and converts raw timestamps into a standardized format.
+ */
 public class ShadowParser {
+    /**
+     * Parses raw user input String into a ShadowCommand instance.
+     * The user input is analyzed to identify the command type, before returning the corresponding
+     * ShadowCommand instance. Parsing of deadline and event commands is delegated to specialized parsers.
+     *
+     * @param input The raw user input String to parse.
+     * @return A ShadowCommand instance representing the parsed input.
+     * @throws ShadowException If the user input is syntactically invalid.
+     */
     public static ShadowCommand parse(String input) throws ShadowException {
         // Code reuse
         String[] inputData = input.split(" ");
@@ -39,6 +53,15 @@ public class ShadowParser {
         }
     }
 
+    /**
+     * Parses Deadline command details and returns the corresponding ShadowCommand instance.
+     * Expects the command details to include a task description, the "/by" keyword,
+     * and a due date in the format "d/M/yyyy HHmm".
+     *
+     * @param requestDetails The trailing input after the deadline keyword.
+     * @return A ShadowCommand instance representing the Deadline details.
+     * @throws ShadowException If "/by", description, or due date is missing, or the date format is invalid.
+     */
     private static ShadowCommand parseDeadline(String requestDetails) throws ShadowException {
         if (requestDetails.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your deadline.\n");
@@ -59,6 +82,15 @@ public class ShadowParser {
         }
     }
 
+    /**
+     * Parses Event command details and returns the corresponding ShadowCommand instance.
+     * Expects the command details to include a task description, the "/from" and "/to" keywords,
+     * a start date in the format "d/M/yyyy HHmm", and an end date in the format "d/M/yyyy HHmm".
+     *
+     * @param requestDetails The trailing input after the event keyword.
+     * @return A ShadowCommand instance representing the Event details.
+     * @throws ShadowException If "/from", "/to", description, or dates are missing, or the date format is invalid.
+     */
     private static ShadowCommand parseEvent(String requestDetails) throws ShadowException {
         if (requestDetails.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your event.\n");
@@ -88,6 +120,13 @@ public class ShadowParser {
         }
     }
 
+    /**
+     * Returns a String representing the given task timestamp, formatted as "MMM d yyyy HH:mm".
+     * This helper function converts the given timestamp using the DateTimeFormatter class.
+     *
+     * @param timestamp The raw task timestamp in "d/M/yyyy HHmm" format.
+     * @return A formatted String representation of the given task timestamp.
+     */
     private static String formatTaskDateTime(String timestamp) {
         DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm"); // code reuse
         DateTimeFormatter taskOutputFormatter = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
@@ -95,8 +134,14 @@ public class ShadowParser {
         return taskTimestamp.format(taskOutputFormatter);
     }
 
-    // Code reuse
-    private static int stringToIndex(String index) {
+    /**
+     * Returns an integer corresponding to the given numeric String.
+     * This helper function converts the given String into an integer used for TaskList indexing.
+     *
+     * @param index The String representing a numeric index.
+     * @return The parsed integer index, or -1 if parsing fails.
+     */
+    private static int stringToIndex(String index) { // Code reuse
         try {
             return Integer.parseInt(index);
         } catch (NumberFormatException exception) {
