@@ -61,19 +61,19 @@ public class ShadowStorage {
 
         Scanner fileScanner = new Scanner(this.databaseFile);
         while (fileScanner.hasNextLine()) {
-            String[] taskData = fileScanner.nextLine().split("\\|"); // code reuse
-            for (int i = 0; i < taskData.length; i++) {
-                taskData[i] = taskData[i].trim();
+            String[] taskDetails = fileScanner.nextLine().split("\\|"); // code reuse
+            for (int i = 0; i < taskDetails.length; i++) {
+                taskDetails[i] = taskDetails[i].trim();
             }
-            Task currentTask = getTask(taskData);
+            Task currentTask = getTask(taskDetails);
             taskList.addTask(currentTask);
         }
     }
 
-    private Task getTask(String[] taskData) {
-        String taskType = taskData[0];
-        boolean isTaskDone = taskData[1].equals("1");
-        String taskDescription = taskData[2];
+    private Task getTask(String[] taskDetails) {
+        String taskType = taskDetails[0];
+        boolean isTaskDone = taskDetails[1].equals("1");
+        String taskDescription = taskDetails[2];
         Task currentTask = new Task("");
 
         switch (taskType) {
@@ -81,10 +81,10 @@ public class ShadowStorage {
             currentTask = new Todo(taskDescription);
             break;
         case "D":
-            currentTask = new Deadline(taskDescription, taskData[3]);
+            currentTask = new Deadline(taskDescription, taskDetails[3]);
             break;
         case "E":
-            String[] eventTimings = taskData[3].split("-");
+            String[] eventTimings = taskDetails[3].split("-");
             currentTask = new Event(taskDescription, eventTimings[0], eventTimings[1]);
             break;
         default:

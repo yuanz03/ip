@@ -9,9 +9,9 @@ import java.time.format.DateTimeParseException;
 public class ShadowParser {
     public static ShadowCommand parse(String input) throws ShadowException {
         // Code reuse
-        String[] inputData = input.split(" ");
-        String requestType = inputData[0].toLowerCase();
-        String requestDetails = inputData.length > 1 ? input.substring(requestType.length() + 1) : "";
+        String[] inputDetails = input.split(" ");
+        String requestType = inputDetails[0].toLowerCase();
+        String requestDetails = inputDetails.length > 1 ? input.substring(requestType.length() + 1) : "";
         // Code reuse for switch structure and return statement
         switch (requestType) {
         case "list":
