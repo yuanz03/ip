@@ -1,10 +1,10 @@
 package shadowbuddy.app;
 
-import shadowbuddy.services.ShadowException;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import shadowbuddy.services.ShadowException;
 
 /**
  * Parses raw user input into ShadowCommand objects used by the controller.
@@ -23,26 +23,26 @@ public class ShadowParser {
      */
     public static ShadowCommand parse(String input) throws ShadowException {
         // Code reuse
-        String[] inputData = input.split(" ");
-        String requestType = inputData[0].toLowerCase();
-        String requestDetails = inputData.length > 1 ? input.substring(requestType.length() + 1) : "";
+        String[] inputDetails = input.split(" ");
+        String requestType = inputDetails[0].toLowerCase();
+        String requestDetails = inputDetails.length > 1 ? input.substring(requestType.length() + 1) : "";
         // Code reuse for switch structure and return statement
         switch (requestType) {
         case "list":
             return new ShadowCommand(ShadowCommand.CommandType.LIST);
         case "mark":
-            int markIndex = stringToIndex(requestDetails);
+            int markIndex = convertStringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.MARK, markIndex);
         case "unmark":
-            int unmarkIndex = stringToIndex(requestDetails);
+            int unmarkIndex = convertStringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.UNMARK, unmarkIndex);
         case "delete":
-            int deleteIndex = stringToIndex(requestDetails);
+            int deleteIndex = convertStringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.DELETE, deleteIndex);
         case "find":
             if (requestDetails.isEmpty()) {
                 throw new ShadowException("Invalid request! Please provide a keyword for your find.\n");
-            } else if (inputData.length > 2) {
+            } else if (inputDetails.length > 2) {
                 throw new ShadowException("Invalid request! Please provide only ONE keyword for your find.\n");
             }
             return new ShadowCommand(ShadowCommand.CommandType.FIND, requestDetails);
@@ -148,7 +148,7 @@ public class ShadowParser {
      * @param index The String representing a numeric index.
      * @return The parsed integer index, or -1 if parsing fails.
      */
-    private static int stringToIndex(String index) { // Code reuse
+    private static int convertStringToIndex(String index) { // Code reuse
         try {
             return Integer.parseInt(index);
         } catch (NumberFormatException exception) {

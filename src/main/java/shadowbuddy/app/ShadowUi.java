@@ -48,7 +48,7 @@ public class ShadowUi {
      *
      * @param task The Task that was marked as done.
      */
-    public void markConfirmationMessage(Task task) {
+    public void showMarkConfirmationMessage(Task task) {
         System.out.println("\nNice! I've marked this task as done:\n  " + task + "\n");
     }
 
@@ -58,7 +58,7 @@ public class ShadowUi {
      *
      * @param task The Task that was marked as not done.
      */
-    public void unmarkConfirmationMessage(Task task) {
+    public void showUnmarkConfirmationMessage(Task task) {
         System.out.println("\nOK, I've marked this task as not done:\n  " + task + "\n");
     }
 
@@ -69,7 +69,7 @@ public class ShadowUi {
      * @param task The Task that was deleted.
      * @param taskCount The number of tasks remaining in the task list.
      */
-    public void deleteConfirmationMessage(Task task, int taskCount) {
+    public void showDeleteConfirmationMessage(Task task, int taskCount) {
         System.out.println("\nNoted. I've removed this task:\n  " + task);
         System.out.println("Now you have " + taskCount + " tasks in the list.\n");
     }
@@ -81,7 +81,7 @@ public class ShadowUi {
      * @param task The Task that was created.
      * @param taskCount The updated number of tasks in the task list.
      */
-    public void taskCreationMessage(Task task, int taskCount) {
+    public void showTaskCreationMessage(Task task, int taskCount) {
         System.out.println("\nGot it. I've added this task:\n  " + task);
         System.out.println("Now you have " + taskCount + " tasks in the list.\n");
     }

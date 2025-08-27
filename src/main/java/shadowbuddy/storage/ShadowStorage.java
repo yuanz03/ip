@@ -6,10 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import shadowbuddy.taskmodels.TaskList;
 import shadowbuddy.taskmodels.Deadline;
 import shadowbuddy.taskmodels.Event;
 import shadowbuddy.taskmodels.Task;
+import shadowbuddy.taskmodels.TaskList;
 import shadowbuddy.taskmodels.Todo;
 
 /**
@@ -84,7 +84,7 @@ public class ShadowStorage {
      */
     public void writeToDatabase(TaskList taskList) throws IOException {
         FileWriter taskWriter = new FileWriter(this.filePath);
-        for (int i = 0; i < taskList.length(); i++) {
+        for (int i = 0; i < taskList.getLength(); i++) {
             Task task = taskList.getTask(i + 1);
             taskWriter.write(formatTask(task) + "\n");
         }
@@ -108,11 +108,12 @@ public class ShadowStorage {
 
         Scanner fileScanner = new Scanner(this.databaseFile);
         while (fileScanner.hasNextLine()) {
-            String[] taskData = fileScanner.nextLine().split("\\|"); // code reuse
-            for (int i = 0; i < taskData.length; i++) {
-                taskData[i] = taskData[i].trim();
+            String[] taskDetails = fileScanner.nextLine().split("\\|"); // code reuse
+            for (int i = 0; i < taskDetails.length; i++) {
+                taskDetails[i] = taskDetails[i].trim();
             }
-            Task currentTask = createTask(taskData);
+
+            Task currentTask = createTask(taskDetails);
             taskList.addTask(currentTask);
         }
     }
@@ -125,13 +126,13 @@ public class ShadowStorage {
      * Based on the task type, the appropriate Task instance is created.
      * If the task is completed, it is marked as done before being returned.
      *
-     * @param taskData The String array of task information obtained from the database file.
+     * @param taskDetails The String array of task information obtained from the database file.
      * @return A Task representing the given task data.
      */
-    private Task createTask(String[] taskData) {
-        String taskType = taskData[0];
-        boolean isTaskDone = taskData[1].equals("1");
-        String taskDescription = taskData[2];
+    private Task createTask(String[] taskDetails) {
+        String taskType = taskDetails[0];
+        boolean isTaskDone = taskDetails[1].equals("1");
+        String taskDescription = taskDetails[2];
         Task currentTask = new Task("");
 
         switch (taskType) {
@@ -139,10 +140,10 @@ public class ShadowStorage {
             currentTask = new Todo(taskDescription);
             break;
         case "D":
-            currentTask = new Deadline(taskDescription, taskData[3]);
+            currentTask = new Deadline(taskDescription, taskDetails[3]);
             break;
         case "E":
-            String[] eventTimings = taskData[3].split("-");
+            String[] eventTimings = taskDetails[3].split("-");
             currentTask = new Event(taskDescription, eventTimings[0], eventTimings[1]);
             break;
         default:

@@ -76,7 +76,7 @@ public class ShadowControllerTest {
 
         dummyController.executeCommand(TODO_COMMAND, dummyUi);
         dummyController.executeCommand(DELETE_COMMAND, dummyUi);
-        assertEquals(0, dummyController.getTaskList().length());
+        assertEquals(0, dummyController.getTaskList().getLength());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ShadowControllerTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid task index! Please enter a number between 1 and "
-                    + dummyController.getTaskList().length() + ".\n", exception.getMessage());
+                    + dummyController.getTaskList().getLength() + ".\n", exception.getMessage());
         }
 
         try {
@@ -129,7 +129,7 @@ public class ShadowControllerTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid task index! Please enter a number between 1 and "
-                    + dummyController.getTaskList().length() + ".\n", exception.getMessage());
+                    + dummyController.getTaskList().getLength() + ".\n", exception.getMessage());
         }
 
         try {
@@ -138,7 +138,7 @@ public class ShadowControllerTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid task index! Please enter a number between 1 and "
-                    + dummyController.getTaskList().length() + ".\n", exception.getMessage());
+                    + dummyController.getTaskList().getLength() + ".\n", exception.getMessage());
         }
     }
 

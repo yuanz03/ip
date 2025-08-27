@@ -65,7 +65,7 @@ public class TaskList {
      */
     public TaskList getMatchingTasks(TaskList taskList, String keyword) {
         TaskList matchingTasks = new TaskList();
-        for (int i = 0; i < taskList.length(); i++) {
+        for (int i = 0; i < taskList.getLength(); i++) {
             Task task = taskList.getTask(i + 1);
             if (containsKeyword(task.getDescription(), keyword)) {
                 matchingTasks.addTask(task);
@@ -78,7 +78,7 @@ public class TaskList {
         return this.storage.get(index - 1);
     }
 
-    public int length() {
+    public int getLength() {
         return this.storage.size();
     }
 
