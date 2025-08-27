@@ -17,13 +17,13 @@ public class ShadowParser {
         case "list":
             return new ShadowCommand(ShadowCommand.CommandType.LIST);
         case "mark":
-            int markIndex = stringToIndex(requestDetails);
+            int markIndex = convertStringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.MARK, markIndex);
         case "unmark":
-            int unmarkIndex = stringToIndex(requestDetails);
+            int unmarkIndex = convertStringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.UNMARK, unmarkIndex);
         case "delete":
-            int deleteIndex = stringToIndex(requestDetails);
+            int deleteIndex = convertStringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.DELETE, deleteIndex);
         case "todo":
             if (requestDetails.isEmpty()) {
@@ -96,7 +96,7 @@ public class ShadowParser {
     }
 
     // Code reuse
-    private static int stringToIndex(String index) {
+    private static int convertStringToIndex(String index) {
         try {
             return Integer.parseInt(index);
         } catch (NumberFormatException exception) {

@@ -47,7 +47,7 @@ public class ShadowStorage {
 
     public void writeToDatabase(TaskList taskList) throws IOException {
         FileWriter taskWriter = new FileWriter(this.filePath);
-        for (int i = 0; i < taskList.length(); i++) {
+        for (int i = 0; i < taskList.getLength(); i++) {
             Task task = taskList.getTask(i + 1);
             taskWriter.write(formatTask(task) + "\n");
         }

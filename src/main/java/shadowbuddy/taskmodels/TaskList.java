@@ -29,7 +29,7 @@ public class TaskList {
         return this.storage.get(index - 1);
     }
 
-    public int length() {
+    public int getLength() {
         return this.storage.size();
     }
 

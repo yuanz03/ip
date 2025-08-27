@@ -18,19 +18,19 @@ public class ShadowUi {
         System.out.println("\nHere are the tasks in your list:\n" + taskList);
     }
 
-    public void markConfirmationMessage(Task task) {
+    public void showMarkConfirmationMessage(Task task) {
         System.out.println("\nNice! I've marked this task as done:\n  " + task + "\n");
     }
 
-    public void unmarkConfirmationMessage(Task task) {
+    public void showUnmarkConfirmationMessage(Task task) {
         System.out.println("\nOK, I've marked this task as not done:\n  " + task + "\n");
     }
 
-    public void deleteConfirmationMessage(Task task, int taskCount) {
+    public void showDeleteConfirmationMessage(Task task, int taskCount) {
         System.out.println("\nNoted. I've removed this task:\n  " + task);
         System.out.println("Now you have " + taskCount + " tasks in the list.\n");
     }
-    public void taskCreationMessage(Task task, int taskCount) {
+    public void showTaskCreationMessage(Task task, int taskCount) {
         System.out.println("\nGot it. I've added this task:\n  " + task);
         System.out.println("Now you have " + taskCount + " tasks in the list.\n");
     }

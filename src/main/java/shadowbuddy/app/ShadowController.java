@@ -41,34 +41,34 @@ public class ShadowController {
             ui.showTaskList(this.taskList);
             break;
         case MARK:
-            validateTaskIndex(taskIndex, this.taskList.length());
+            validateTaskIndex(taskIndex, this.taskList.getLength());
             this.taskList.markTask(taskIndex);
-            ui.markConfirmationMessage(this.taskList.getTask(taskIndex));
+            ui.showMarkConfirmationMessage(this.taskList.getTask(taskIndex));
             break;
         case UNMARK:
-            validateTaskIndex(taskIndex, this.taskList.length());
+            validateTaskIndex(taskIndex, this.taskList.getLength());
             this.taskList.unmarkTask(taskIndex);
-            ui.unmarkConfirmationMessage(this.taskList.getTask(taskIndex));
+            ui.showUnmarkConfirmationMessage(this.taskList.getTask(taskIndex));
             break;
         case DELETE:
-            validateTaskIndex(taskIndex, this.taskList.length());
+            validateTaskIndex(taskIndex, this.taskList.getLength());
             Task deletedTask = this.taskList.deleteTask(taskIndex);
-            ui.deleteConfirmationMessage(deletedTask, this.taskList.length());
+            ui.showDeleteConfirmationMessage(deletedTask, this.taskList.getLength());
             break;
         case TODO:
             Task userTodo = new Todo(taskDescription);
             this.taskList.addTask(userTodo);
-            ui.taskCreationMessage(userTodo, this.taskList.length());
+            ui.showTaskCreationMessage(userTodo, this.taskList.getLength());
             break;
         case DEADLINE:
             Task userDeadline = new Deadline(taskDescription, userCommand.dueDate);
             this.taskList.addTask(userDeadline);
-            ui.taskCreationMessage(userDeadline, this.taskList.length());
+            ui.showTaskCreationMessage(userDeadline, this.taskList.getLength());
             break;
         case EVENT:
             Task userEvent = new Event(taskDescription, userCommand.startDate, userCommand.endDate);
             this.taskList.addTask(userEvent);
-            ui.taskCreationMessage(userEvent, this.taskList.length());
+            ui.showTaskCreationMessage(userEvent, this.taskList.getLength());
             break;
         case UNKNOWN:
             // Fallthrough
