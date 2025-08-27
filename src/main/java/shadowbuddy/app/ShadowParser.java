@@ -1,10 +1,10 @@
 package shadowbuddy.app;
 
-import shadowbuddy.services.ShadowException;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
+import shadowbuddy.services.ShadowException;
 
 public class ShadowParser {
     public static ShadowCommand parse(String input) throws ShadowException {

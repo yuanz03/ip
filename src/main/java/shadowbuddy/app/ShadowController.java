@@ -1,5 +1,8 @@
 package shadowbuddy.app;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
 import shadowbuddy.taskmodels.Deadline;
@@ -7,9 +10,6 @@ import shadowbuddy.taskmodels.Event;
 import shadowbuddy.taskmodels.Task;
 import shadowbuddy.taskmodels.TaskList;
 import shadowbuddy.taskmodels.Todo;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class ShadowController {
     protected final TaskList taskList;
