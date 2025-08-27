@@ -65,7 +65,7 @@ public class Shadow {
     }
 
     /**
-     * Main entry point of the Shadow chatbot application, using a predefined storage file path.
+     * Provides the main entry point of the Shadow chatbot application, using a predefined storage file path.
      */
     public static void main(String[] args) {
         new Shadow("./data/database.txt").run();
