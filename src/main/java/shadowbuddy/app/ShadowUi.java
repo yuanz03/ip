@@ -18,6 +18,11 @@ public class ShadowUi {
         System.out.println("\nHere are the tasks in your list:\n" + taskList);
     }
 
+    /**
+     * Displays all matching tasks from the given TaskList that match the specified keyword.
+     *
+     * @param taskList The TaskList whose matching tasks will be printed for the user.
+     */
     public void showMatchingTasks(TaskList taskList) {
         System.out.println("\nHere are the matching tasks in your list:\n" + taskList);
     }

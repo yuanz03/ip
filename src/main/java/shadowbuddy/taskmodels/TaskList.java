@@ -25,6 +25,15 @@ public class TaskList {
        this.storage.get(index - 1).markAsNotDone();
     }
 
+    /**
+     * Returns a TaskList containing only tasks whose descriptions match the given keyword.
+     * Iterates through the given TaskList, comparing each task's description against the
+     * given keyword, and stores all matching tasks in a new Tasklist.
+     *
+     * @param taskList The TaskList to traverse through.
+     * @param keyword The keyword to match against task descriptions.
+     * @return A new TaskList containing all the matching tasks.
+     */
     public TaskList getMatchingTasks(TaskList taskList, String keyword) {
         TaskList matchingTasks = new TaskList();
         for (int i = 0; i < taskList.length(); i++) {
@@ -44,6 +53,14 @@ public class TaskList {
         return this.storage.size();
     }
 
+    /**
+     * Returns true when the given task description contains the specified keyword.
+     * Partial matches of the keyword are not considered, and comparisons are case-insensitive.
+     *
+     * @param description The task description to search through.
+     * @param keyword The keyword to match against task descriptions.
+     * @return True if the keyword appears in the description; False otherwise.
+     */
     private boolean containsKeyword(String description, String keyword) {
         String[] descriptionDetails = description.split(" ");
         //noinspection ForLoopReplaceableByForEach
