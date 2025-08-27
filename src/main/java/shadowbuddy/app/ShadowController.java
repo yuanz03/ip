@@ -17,7 +17,7 @@ import java.io.IOException;
  * delegates UI messages to ShadowUi, and uses ShadowStorage to save and load tasks.
  */
 public class ShadowController {
-    protected final TaskList taskList;
+    protected TaskList taskList;
     protected final ShadowStorage storage;
 
     /**
@@ -91,6 +91,10 @@ public class ShadowController {
             validateTaskIndex(taskIndex, this.taskList.length());
             Task deletedTask = this.taskList.deleteTask(taskIndex);
             ui.deleteConfirmationMessage(deletedTask, this.taskList.length());
+            break;
+        case FIND:
+            TaskList matchingTasks = this.taskList.getMatchingTasks(this.taskList, taskDescription);
+            ui.showMatchingTasks(matchingTasks);
             break;
         case TODO:
             Task userTodo = new Todo(taskDescription);

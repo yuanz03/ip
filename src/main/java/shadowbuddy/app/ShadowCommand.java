@@ -11,7 +11,7 @@ public class ShadowCommand {
      * The CommandType enum lists commands for creating and updating tasks,
      * with UNKNOWN serving as a fallback for unrecognized input.
      */
-    public enum CommandType { LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, UNKNOWN } // code reuse
+    public enum CommandType { LIST, MARK, UNMARK, DELETE, FIND, TODO, DEADLINE, EVENT, UNKNOWN } // code reuse
 
     /** The type of the user command */
     protected final CommandType commandType;
