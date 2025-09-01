@@ -1,7 +1,7 @@
 package shadowbuddy.app;
 
-import shadowbuddy.taskmodels.TaskList;
 import shadowbuddy.taskmodels.Task;
+import shadowbuddy.taskmodels.TaskList;
 
 /**
  * Provides simple console messages for user interaction with the chatbot.
