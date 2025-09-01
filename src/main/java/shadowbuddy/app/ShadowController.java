@@ -141,7 +141,7 @@ public class ShadowController {
      *
      * @throws IOException If the database file cannot be written to.
      */
-    public void writeToDatabase() throws IOException{
+    public void writeToDatabase() throws IOException {
         this.storage.writeToDatabase(this.taskList);
     }
 }

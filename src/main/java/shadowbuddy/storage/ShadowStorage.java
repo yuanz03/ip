@@ -41,7 +41,7 @@ public class ShadowStorage {
      *
      * @throws IOException If creating the database file fails.
      */
-    public void createDatabase() throws IOException{
+    public void createDatabase() throws IOException {
         File parentFile = this.databaseFile.getParentFile();
 
         if (parentFile != null && !parentFile.exists()) { // code reuse
@@ -172,7 +172,7 @@ public class ShadowStorage {
         } else if (task instanceof Deadline deadline) {
             return "D | " + taskStatus + " | " + deadline.getDescription() + " | " + deadline.getDueDate();
         } else if (task instanceof Event event) {
-            return "E | " + taskStatus + " | " + event.getDescription() +  " | " + event.getStartDate()
+            return "E | " + taskStatus + " | " + event.getDescription() + " | " + event.getStartDate()
                     + "-" + event.getEndDate();
         } else {
             return ""; // This code should never be reached

@@ -51,7 +51,7 @@ public class TaskList {
      * @param index The 1-based index of the Task to unmark.
      */
     public void unmarkTask(int index) {
-       this.storage.get(index - 1).markAsNotDone();
+        this.storage.get(index - 1).markAsNotDone();
     }
 
     /**
