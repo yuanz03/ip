@@ -1,7 +1,6 @@
 package shadowbuddy.app;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
@@ -40,38 +39,18 @@ public class Shadow {
      * This method greets the user and reads user input until it processes "bye".
      * Each recognized command is executed by the controller and the output is written to storage.
      */
-    public void run() {
-        chatbotUi.greetUsers();
-
-        Scanner inputScanner = new Scanner(System.in);
-        while (inputScanner.hasNextLine()) {
-            String userInput = inputScanner.nextLine();
-
-            if (userInput.equalsIgnoreCase("bye")) {
-                break;
-            }
-
-            try {
-                ShadowCommand userCommand = chatbotController.handleInput(userInput);
-                chatbotController.executeCommand(userCommand, chatbotUi);
-                chatbotController.writeToDatabase();
-            } catch (ShadowException | IOException exception) {
-                System.out.println(exception.getMessage());
-            }
+    public String getResponse(String userInput) {
+        if (userInput.equalsIgnoreCase("bye")) {
+            return chatbotUi.sayGoodbye();
         }
 
-        chatbotUi.sayGoodbye();
-        inputScanner.close();
-    }
-
-    /**
-     * Provides the main entry point of the Shadow chatbot application, using a predefined storage file path.
-     */
-    public static void main(String[] args) {
-        new Shadow("./data/database.txt").run();
-    }
-
-    public String getResponse(String input) {
-        return "Duke heard: " + input;
+        try {
+            ShadowCommand userCommand = chatbotController.handleInput(userInput);
+            String chatbotOutput = chatbotController.executeCommand(userCommand, chatbotUi);
+            chatbotController.writeToDatabase();
+            return chatbotOutput;
+        } catch (ShadowException | IOException exception) {
+            return exception.getMessage();
+        }
     }
 }
