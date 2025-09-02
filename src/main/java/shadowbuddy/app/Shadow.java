@@ -12,6 +12,7 @@ import shadowbuddy.storage.ShadowStorage;
 public class Shadow {
     private final ShadowUi chatbotUi;
     private final ShadowController chatbotController;
+    private final ShadowStorage taskStorage;
 
     /**
      * Initializes a Shadow instance with the given file path.
@@ -22,23 +23,22 @@ public class Shadow {
      * @param filePath The file path to the task list database file.
      */
     public Shadow(String filePath) {
-        ShadowStorage taskStorage = new ShadowStorage(filePath);
+        taskStorage = new ShadowStorage(filePath);
         chatbotController = new ShadowController(taskStorage);
         chatbotUi = new ShadowUi();
+    }
+
+    public String greetUsers() {
+        String greeting = chatbotUi.greetUsers();
         try {
             taskStorage.createDatabase();
-            taskStorage.printDatabase();
             chatbotController.loadDatabase();
+            return greeting + "\n" + taskStorage.outputDatabase();
         } catch (IOException exception) {
-            System.out.println(exception.getMessage());
+            return exception.getMessage();
         }
     }
 
-    /**
-     * Executes the main loop which handles user input and commands.
-     * This method greets the user and reads user input until it processes "bye".
-     * Each recognized command is executed by the controller and the output is written to storage.
-     */
     public String getResponse(String userInput) {
         if (userInput.equalsIgnoreCase("bye")) {
             return chatbotUi.sayGoodbye();

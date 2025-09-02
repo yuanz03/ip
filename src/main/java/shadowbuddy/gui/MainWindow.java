@@ -35,6 +35,9 @@ public class MainWindow extends AnchorPane {
     /** Injects the Duke instance */
     public void setShadow(Shadow shadow) {
         this.shadow = shadow;
+        dialogContainer.getChildren().addAll(
+                DialogBox.getDukeDialog(shadow.greetUsers(), chatbotImage)
+        );
     }
 
     /**

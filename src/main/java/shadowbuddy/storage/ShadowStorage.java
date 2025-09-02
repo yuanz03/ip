@@ -65,12 +65,17 @@ public class ShadowStorage {
      *
      * @throws FileNotFoundException If the database file cannot be found or read.
      */
-    public void printDatabase() throws FileNotFoundException {
+    public String outputDatabase() throws FileNotFoundException {
         Scanner fileScanner = new Scanner(this.databaseFile);
+        StringBuilder sb = new StringBuilder();
+        int taskIndex = 1;
+
         while (fileScanner.hasNextLine()) {
-            System.out.println(fileScanner.nextLine());
+            sb.append(taskIndex).append(". ").append(fileScanner.nextLine()).append("\n");
+            taskIndex++;
         }
-        System.out.println();
+        sb.append("\n");
+        return sb.toString();
     }
 
     /**
