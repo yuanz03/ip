@@ -48,7 +48,7 @@ test {
 }
 
 application {
-    mainClass.set("shadowbuddy.app.Shadow")
+    mainClass.set("shadowbuddy.gui.Launcher")
 }
 
 shadowJar {
