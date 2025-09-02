@@ -24,18 +24,24 @@ public class DialogBox extends HBox {
     @FXML
     private ImageView displayPicture;
 
-    private DialogBox(String text, Image img) {
+    /**
+     * Initializes a DialogBox instance with the given message text and avatar image.
+     *
+     * @param message The content of the chatbot or user response.
+     * @param avatar The profile image representing the chatbot or user.
+     */
+    private DialogBox(String message, Image avatar) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
-            fxmlLoader.setController(this);
-            fxmlLoader.setRoot(this);
-            fxmlLoader.load();
+            FXMLLoader loader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
+            loader.setController(this);
+            loader.setRoot(this);
+            loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        dialog.setText(text);
-        displayPicture.setImage(img);
+        dialog.setText(message);
+        displayPicture.setImage(avatar);
     }
 
     /**
@@ -48,13 +54,27 @@ public class DialogBox extends HBox {
         setAlignment(Pos.TOP_LEFT);
     }
 
-    public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+    /**
+     * Creates a DialogBox instance that represents the user.
+     *
+     * @param message The content of the user response.
+     * @param avatar The profile image representing the user.
+     * @return A DialogBox configured for the user displayed on the right.
+     */
+    public static DialogBox getUserDialog(String message, Image avatar) {
+        return new DialogBox(message, avatar);
     }
 
-    public static DialogBox getDukeDialog(String text, Image img) {
-        var db = new DialogBox(text, img);
-        db.flip();
-        return db;
+    /**
+     * Creates a DialogBox instance that represents the chatbot.
+     *
+     * @param message The content of the chatbot response.
+     * @param avatar The profile image representing the chatbot.
+     * @return A DialogBox configured for the chatbot displayed on the left.
+     */
+    public static DialogBox getShadowDialog(String message, Image avatar) {
+        var shadowDialog = new DialogBox(message, avatar);
+        shadowDialog.flip();
+        return shadowDialog;
     }
 }

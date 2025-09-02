@@ -9,18 +9,26 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import shadowbuddy.app.Shadow;
 
+/**
+ * Initializes the core application state and loads the main window UI.
+ */
 public class Main extends Application {
+    /** Shadow instance initialized with a predefined storage file path */
+    private final Shadow shadow = new Shadow("./data/database.txt");
 
-    private Shadow shadow = new Shadow("./data/database.txt");
-
+    /**
+     * Starts the JavaFX application by loading the main FXML and injecting the Shadow object into its controller.
+     *
+     * @param stage The primary stage for this application, onto which the application scene can be set.
+     */
     @Override
     public void start(Stage stage) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
-            AnchorPane ap = fxmlLoader.load();
-            Scene scene = new Scene(ap);
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
+            AnchorPane root = loader.load();
+            Scene scene = new Scene(root);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setShadow(shadow);  // inject the Duke instance
+            loader.<MainWindow>getController().setShadow(shadow);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
