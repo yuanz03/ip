@@ -15,7 +15,7 @@ import shadowbuddy.taskmodels.Todo;
 /**
  * Manages saving, updating, and loading the chatbot's task list from a file.
  * The ShadowStorage class wraps a file path and provides methods to create the database
- * file, print its contents, write a TaskList to it, and load tasks from it.
+ * file, output its contents, write a TaskList to it, and load tasks from it.
  */
 public class ShadowStorage {
     /** File path to the task list database file */
@@ -37,8 +37,9 @@ public class ShadowStorage {
      * Creates the database file and its parent directories if they do not already exist.
      * If any of the parent directories are missing, they will be created.
      * If the database file did not already exist, a new database file will be created.
-     * Otherwise, a message is printed to indicate that the existing task list will be displayed.
+     * Otherwise, a message is displayed to indicate that the existing task list will be displayed.
      *
+     * @return A String describing the file operation performed.
      * @throws IOException If creating the database file fails.
      */
     public String createDatabase() throws IOException {
@@ -58,11 +59,12 @@ public class ShadowStorage {
     }
 
     /**
-     * Prints the tasks stored in the database file to the screen.
-     * A Scanner is used to read each line from the database file,
-     * and print the tasks line by line to the screen.
-     * A trailing blank line is printed after the file contents.
+     * Returns the tasks stored in the database file to the screen.
+     * A Scanner is used to read each line from the database file.
+     * Each input line becomes a numbered entry in the returned String.
+     * A trailing blank line is added after the file contents.
      *
+     * @return A String containing the entire task list read from the database file.
      * @throws FileNotFoundException If the database file cannot be found or read.
      */
     public String outputDatabase() throws FileNotFoundException {

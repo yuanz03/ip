@@ -4,20 +4,20 @@ import shadowbuddy.taskmodels.Task;
 import shadowbuddy.taskmodels.TaskList;
 
 /**
- * Provides simple console messages for user interaction with the chatbot.
+ * Provides simple messages for user interaction with the chatbot.
  * The ShadowUi class encapsulates all messages displayed to the user, such as greetings, farewells,
  * and task-related confirmations, providing a single platform for handling communication.
  */
 public class ShadowUi {
     /**
-     * Prints a friendly greeting and prompts the user for an input.
+     * Returns a friendly greeting and prompts the user for an input.
      */
     public String greetUsers() {
         return "Hi, I'm Shadow, your personal assistant!\nWhat can I help you with today?\n";
     }
 
     /**
-     * Prints a friendly goodbye message to the user.
+     * Returns a friendly goodbye message to the user.
      */
     public String sayGoodbye() {
         return "\nGoodbye! I'll be here if you need anything else!";
@@ -26,7 +26,7 @@ public class ShadowUi {
     /**
      * Displays all tasks in the given TaskList to the user.
      *
-     * @param taskList The TaskList whose tasks will be printed for the user.
+     * @param taskList The TaskList whose tasks will be displayed for the user.
      */
     public String showTaskList(TaskList taskList) {
         return "\nHere are the tasks in your list:\n" + taskList;
@@ -35,14 +35,14 @@ public class ShadowUi {
     /**
      * Displays all matching tasks from the given TaskList that match the specified keyword.
      *
-     * @param taskList The TaskList whose matching tasks will be printed for the user.
+     * @param taskList The TaskList whose matching tasks will be displayed for the user.
      */
     public String showMatchingTasks(TaskList taskList) {
         return "\nHere are the matching tasks in your list:\n" + taskList;
     }
 
     /**
-     * Prints a confirmation message that the given task has been marked as done.
+     * Returns a confirmation message that the given task has been marked as done.
      * The String representation of the completed task is also displayed.
      *
      * @param task The Task that was marked as done.
@@ -52,7 +52,7 @@ public class ShadowUi {
     }
 
     /**
-     * Prints a confirmation message that the given task has been marked as not done.
+     * Returns a confirmation message that the given task has been marked as not done.
      * The String representation of the incomplete task is also displayed.
      *
      * @param task The Task that was marked as not done.
@@ -62,7 +62,7 @@ public class ShadowUi {
     }
 
     /**
-     * Prints a confirmation message that the given task has been deleted.
+     * Returns a confirmation message that the given task has been deleted.
      * The String representation of the deleted task and the remaining task count are also displayed.
      *
      * @param task The Task that was deleted.
@@ -73,7 +73,7 @@ public class ShadowUi {
     }
 
     /**
-     * Prints a confirmation message that the given task has been created.
+     * Returns a confirmation message that the given task has been created.
      * The String representation of the created task and the new task count are also displayed.
      *
      * @param task The Task that was created.
