@@ -1,73 +1,82 @@
 package shadowbuddy.app;
 
 import java.io.IOException;
-import java.util.Scanner;
 
+import javafx.application.Platform;
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
 
 /**
  * Coordinates the Shadow chatbot's UI, controller, command parser and storage.
  * The Shadow class is composed of the ShadowUi, ShadowController, ShadowParser, and ShadowStorage components.
+ * It also provides methods to integrate with the GUI, manage the database, and handle UI interactions.
  */
 public class Shadow {
     private final ShadowUi chatbotUi;
     private final ShadowController chatbotController;
+    private final ShadowStorage taskStorage;
 
     /**
      * Initializes a Shadow instance with the given file path.
      * The constructor also initializes the storage, controller, and UI.
-     * The storage sets up the task database (creating it if needed), and then prints it.
-     * The controller then loads the database into the TaskList.
      *
      * @param filePath The file path to the task list database file.
      */
     public Shadow(String filePath) {
-        ShadowStorage taskStorage = new ShadowStorage(filePath);
+        taskStorage = new ShadowStorage(filePath);
         chatbotController = new ShadowController(taskStorage);
         chatbotUi = new ShadowUi();
+    }
+
+    /**
+     * Returns a welcome message for users along with the existing tasks stored in the storage.
+     * The storage sets up the task database (creating it if needed), and then outputs it.
+     * The controller is responsible for loading the database into the TaskList.
+     *
+     * @return The combined greeting message, confirmation message, and the contents of the task storage.
+     */
+    public String greetUsers() {
+        String greeting = chatbotUi.greetUsers();
         try {
-            taskStorage.createDatabase();
-            taskStorage.printDatabase();
+            String confirmationMessage = taskStorage.createDatabase();
             chatbotController.loadDatabase();
+            return greeting + "\n" + confirmationMessage + "\n" + taskStorage.outputDatabase();
         } catch (IOException exception) {
-            System.out.println(exception.getMessage());
+            return exception.getMessage();
         }
     }
 
     /**
-     * Executes the main loop which handles user input and commands.
-     * This method greets the user and reads user input until it processes "bye".
-     * Each recognized command is executed by the controller and the output is written to storage.
+     * Processes user input and returns the Shadow chatbot's response.
+     * If the user inputs "bye", a Thread is created that waits for one second before terminating the
+     * JavaFX application. This short delay ensures the chatbot has time to display its goodbye message.
+     * Each recognized command is handled and executed by the controller.
+     * The resulting output is both displayed to the user and saved to storage.
+     *
+     * @param userInput The raw input string provided by the user for processing.
+     * @return The chatbot's textual response, generated from executing the user's command.
      */
-    public void run() {
-        chatbotUi.greetUsers();
+    public String getResponse(String userInput) {
+        if (userInput.equalsIgnoreCase("bye")) {
+            new Thread(() -> { // code reuse
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException exception) {
+                    exception.printStackTrace();
+                }
+                Platform.exit();
+            }).start();
 
-        Scanner inputScanner = new Scanner(System.in);
-        while (inputScanner.hasNextLine()) {
-            String userInput = inputScanner.nextLine();
-
-            if (userInput.equalsIgnoreCase("bye")) {
-                break;
-            }
-
-            try {
-                ShadowCommand userCommand = chatbotController.handleInput(userInput);
-                chatbotController.executeCommand(userCommand, chatbotUi);
-                chatbotController.writeToDatabase();
-            } catch (ShadowException | IOException exception) {
-                System.out.println(exception.getMessage());
-            }
+            return chatbotUi.sayGoodbye();
         }
 
-        chatbotUi.sayGoodbye();
-        inputScanner.close();
-    }
-
-    /**
-     * Provides the main entry point of the Shadow chatbot application, using a predefined storage file path.
-     */
-    public static void main(String[] args) {
-        new Shadow("./data/database.txt").run();
+        try {
+            ShadowCommand userCommand = chatbotController.handleInput(userInput);
+            String chatbotOutput = chatbotController.executeCommand(userCommand, chatbotUi);
+            chatbotController.writeToDatabase();
+            return chatbotOutput;
+        } catch (ShadowException | IOException exception) {
+            return exception.getMessage();
+        }
     }
 }

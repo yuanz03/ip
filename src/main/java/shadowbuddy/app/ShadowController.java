@@ -67,50 +67,43 @@ public class ShadowController {
      *
      * @param userCommand The parsed ShadowCommand instance to execute.
      * @param ui The ShadowUi instance used to display confirmation messages and TaskList output.
+     * @return A String representing the UI confirmation message.
      * @throws ShadowException If the command type is unknown or the task index is invalid.
      */
-    public void executeCommand(ShadowCommand userCommand, ShadowUi ui) throws ShadowException {
+    public String executeCommand(ShadowCommand userCommand, ShadowUi ui) throws ShadowException {
         int taskIndex = userCommand.taskIndex;
         String taskDescription = userCommand.taskDescription;
         // Code reuse for switch structure
         switch (userCommand.commandType) {
         case LIST:
-            ui.showTaskList(this.taskList);
-            break;
+            return ui.showTaskList(this.taskList);
         case MARK:
             validateTaskIndex(taskIndex, this.taskList.getLength());
             this.taskList.markTask(taskIndex);
-            ui.showMarkConfirmationMessage(this.taskList.getTask(taskIndex));
-            break;
+            return ui.showMarkConfirmationMessage(this.taskList.getTask(taskIndex));
         case UNMARK:
             validateTaskIndex(taskIndex, this.taskList.getLength());
             this.taskList.unmarkTask(taskIndex);
-            ui.showUnmarkConfirmationMessage(this.taskList.getTask(taskIndex));
-            break;
+            return ui.showUnmarkConfirmationMessage(this.taskList.getTask(taskIndex));
         case DELETE:
             validateTaskIndex(taskIndex, this.taskList.getLength());
             Task deletedTask = this.taskList.deleteTask(taskIndex);
-            ui.showDeleteConfirmationMessage(deletedTask, this.taskList.getLength());
-            break;
+            return ui.showDeleteConfirmationMessage(deletedTask, this.taskList.getLength());
         case FIND:
             TaskList matchingTasks = this.taskList.getMatchingTasks(this.taskList, taskDescription);
-            ui.showMatchingTasks(matchingTasks);
-            break;
+            return ui.showMatchingTasks(matchingTasks);
         case TODO:
             Task userTodo = new Todo(taskDescription);
             this.taskList.addTask(userTodo);
-            ui.showTaskCreationMessage(userTodo, this.taskList.getLength());
-            break;
+            return ui.showTaskCreationMessage(userTodo, this.taskList.getLength());
         case DEADLINE:
             Task userDeadline = new Deadline(taskDescription, userCommand.dueDate);
             this.taskList.addTask(userDeadline);
-            ui.showTaskCreationMessage(userDeadline, this.taskList.getLength());
-            break;
+            return ui.showTaskCreationMessage(userDeadline, this.taskList.getLength());
         case EVENT:
             Task userEvent = new Event(taskDescription, userCommand.startDate, userCommand.endDate);
             this.taskList.addTask(userEvent);
-            ui.showTaskCreationMessage(userEvent, this.taskList.getLength());
-            break;
+            return ui.showTaskCreationMessage(userEvent, this.taskList.getLength());
         case UNKNOWN:
             // Fallthrough
         default:
