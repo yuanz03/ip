@@ -2,10 +2,9 @@ package shadowbuddy.app;
 
 import java.io.IOException;
 
+import javafx.application.Platform;
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
-
-import javafx.application.Platform;
 
 /**
  * Coordinates the Shadow chatbot's UI, controller, command parser and storage.
@@ -34,14 +33,14 @@ public class Shadow {
      * The storage sets up the task database (creating it if needed), and then outputs it.
      * The controller is responsible for loading the database into the TaskList.
      *
-     * @return The combined greeting message and the contents of the task storage.
+     * @return The combined greeting message, confirmation message, and the contents of the task storage.
      */
     public String greetUsers() {
         String greeting = chatbotUi.greetUsers();
         try {
-            taskStorage.createDatabase();
+            String confirmationMessage = taskStorage.createDatabase();
             chatbotController.loadDatabase();
-            return greeting + "\n" + taskStorage.outputDatabase();
+            return greeting + "\n" + confirmationMessage + "\n" + taskStorage.outputDatabase();
         } catch (IOException exception) {
             return exception.getMessage();
         }

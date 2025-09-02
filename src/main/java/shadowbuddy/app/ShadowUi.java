@@ -69,7 +69,7 @@ public class ShadowUi {
      * @param taskCount The number of tasks remaining in the task list.
      */
     public String showDeleteConfirmationMessage(Task task, int taskCount) {
-       return "\nNoted. I've removed this task:\n  " + task + "\nNow you have " + taskCount + " tasks in the list.\n";
+        return "\nNoted. I've removed this task:\n  " + task + "\nNow you have " + taskCount + " tasks in the list.\n";
     }
 
     /**

@@ -44,15 +44,12 @@ public class ShadowStorage {
      */
     public String createDatabase() throws IOException {
         File parentFile = this.databaseFile.getParentFile();
-
-        if (parentFile != null && !parentFile.exists()) { // code reuse
-            //noinspection ResultOfMethodCallIgnored
-            parentFile.mkdirs();
-            return "The relevant folder did not exist! It has now been created for you.\n";
-        }
+        boolean isFolderCreated = parentFile != null && parentFile.mkdirs(); // code reuse
 
         if (this.databaseFile.createNewFile()) {
-            return "No task list found! A new one has been created for you.\n";
+            return isFolderCreated
+                    ? "The relevant folder did not exist! The database has now been created for you.\n"
+                    : "No task list found! A new one has been created for you.\n";
         } else {
             return "Here is your current task list: ";
         }
