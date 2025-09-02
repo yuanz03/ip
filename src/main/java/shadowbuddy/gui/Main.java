@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import shadowbuddy.app.Shadow;
 
 public class Main extends Application {
 
@@ -20,6 +21,7 @@ public class Main extends Application {
     private Scene scene;
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/User.jpg"));
     private Image chatbotImage = new Image(this.getClass().getResourceAsStream("/images/Shadow.jpg"));
+    private Shadow shadow = new Shadow("./data/database.txt");
 
     @Override
     public void start(Stage stage) {
@@ -82,7 +84,12 @@ public class Main extends Application {
      * the dialog container. Clears the user input after processing.
      */
     private void handleUserInput() {
-        dialogContainer.getChildren().addAll(new DialogBox(userInput.getText(), userImage));
+        String userText = userInput.getText();
+        String dukeText = shadow.getResponse(userInput.getText());
+        dialogContainer.getChildren().addAll(
+                DialogBox.getUserDialog(userText, userImage),
+                DialogBox.getDukeDialog(dukeText, chatbotImage)
+        );
         userInput.clear();
     }
 }

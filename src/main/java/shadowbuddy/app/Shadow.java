@@ -70,4 +70,8 @@ public class Shadow {
     public static void main(String[] args) {
         new Shadow("./data/database.txt").run();
     }
+
+    public String getResponse(String input) {
+        return "Duke heard: " + input;
+    }
 }
