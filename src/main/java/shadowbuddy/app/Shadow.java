@@ -2,6 +2,7 @@ package shadowbuddy.app;
 
 import java.io.IOException;
 
+import javafx.application.Platform;
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
 
@@ -41,6 +42,15 @@ public class Shadow {
 
     public String getResponse(String userInput) {
         if (userInput.equalsIgnoreCase("bye")) {
+            new Thread(() -> { // code reuse
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException exception) {
+                    exception.printStackTrace();
+                }
+                Platform.exit();
+            }).start();
+
             return chatbotUi.sayGoodbye();
         }
 
