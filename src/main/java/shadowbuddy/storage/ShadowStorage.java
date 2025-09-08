@@ -18,9 +18,7 @@ import shadowbuddy.taskmodels.Todo;
  * file, output its contents, write a TaskList to it, and load tasks from it.
  */
 public class ShadowStorage {
-    /** File path to the task list database file */
     protected final String filePath;
-    /** File instance representing the task list database file */
     protected final File databaseFile;
 
     /**
@@ -73,6 +71,7 @@ public class ShadowStorage {
             sb.append(taskIndex).append(". ").append(fileScanner.nextLine()).append("\n");
             taskIndex++;
         }
+        fileScanner.close();
         sb.append("\n");
         return sb.toString();
     }
@@ -120,15 +119,11 @@ public class ShadowStorage {
             Task currentTask = createTask(taskDetails);
             taskList.addTask(currentTask);
         }
+        fileScanner.close();
     }
 
     /**
      * Returns a Task created from the given String array of database task data.
-     * The first element of the task data array specifies the task type ("T", "D", or "E").
-     * The second element represents the task's completion status ("1" for done, "0" otherwise).
-     * The remaining elements contain the task description, and, if applicable, the dates and times.
-     * Based on the task type, the appropriate Task instance is created.
-     * If the task is completed, it is marked as done before being returned.
      *
      * @param taskDetails The String array of task information obtained from the database file.
      * @return A Task representing the given task data.
@@ -137,7 +132,7 @@ public class ShadowStorage {
         String taskType = taskDetails[0];
         boolean isTaskDone = taskDetails[1].equals("1");
         String taskDescription = taskDetails[2];
-        Task currentTask = new Task("");
+        Task currentTask;
 
         switch (taskType) {
         case "T":
@@ -151,7 +146,7 @@ public class ShadowStorage {
             currentTask = new Event(taskDescription, eventTimings[0], eventTimings[1]);
             break;
         default:
-            break;
+            throw new IllegalArgumentException("Unknown task type: " + taskType);
         }
 
         if (isTaskDone) {
@@ -179,7 +174,7 @@ public class ShadowStorage {
             return "E | " + taskStatus + " | " + event.getDescription() + " | " + event.getStartDate()
                     + "-" + event.getEndDate();
         } else {
-            return ""; // This code should never be reached
+            throw new IllegalArgumentException("Unknown task: " + task);
         }
     }
 }

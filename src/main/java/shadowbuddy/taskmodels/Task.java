@@ -6,9 +6,7 @@ package shadowbuddy.taskmodels;
  * providing common state handling and String representation.
  */
 public class Task {
-    /** Description of the task */
     protected String description;
-    /** Completion status of the task */
     protected boolean isDone;
 
     /**
@@ -32,16 +30,10 @@ public class Task {
         return this.description;
     }
 
-    /**
-     * Marks this task as done.
-     */
     public void markAsDone() {
         this.isDone = true;
     }
 
-    /**
-     * Marks this task as not done.
-     */
     public void markAsNotDone() {
         this.isDone = false;
     }

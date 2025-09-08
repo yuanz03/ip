@@ -5,7 +5,6 @@ package shadowbuddy.taskmodels;
  * The Deadline class is a subclass of Task and inherits its functionality.
  */
 public class Deadline extends Task {
-    /** Due date of the Deadline */
     protected String dueDate;
 
     /**
