@@ -5,9 +5,7 @@ package shadowbuddy.taskmodels;
  * The Event class is a subclass of Task and inherits its functionality.
  */
 public class Event extends Task {
-    /** Start date of the Event */
     protected String startDate;
-    /** End date of the Event */
     protected String endDate;
 
     /**

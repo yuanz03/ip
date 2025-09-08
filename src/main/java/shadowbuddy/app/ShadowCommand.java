@@ -13,17 +13,14 @@ public class ShadowCommand {
      */
     public enum CommandType { LIST, MARK, UNMARK, DELETE, FIND, TODO, DEADLINE, EVENT, UNKNOWN } // code reuse
 
-    /** The type of the user command */
+    private static final String EMPTY_STRING = "";
+    private static final int NO_INDEX = -1;
+
     protected final CommandType commandType;
-    /** Description of the task */
     protected final String taskDescription;
-    /** Due date of the task, if applicable */
     protected final String dueDate;
-    /** Start date of the task, if applicable */
     protected final String startDate;
-    /** End date of the task, if applicable */
     protected final String endDate;
-    /** Index of the task in the task list, if applicable */
     protected final int taskIndex;
 
     /**
@@ -32,11 +29,11 @@ public class ShadowCommand {
      */
     public ShadowCommand(CommandType commandType) {
         this.commandType = commandType;
-        this.taskDescription = "";
-        this.dueDate = "";
-        this.startDate = "";
-        this.endDate = "";
-        this.taskIndex = -1;
+        this.taskDescription = EMPTY_STRING;
+        this.dueDate = EMPTY_STRING;
+        this.startDate = EMPTY_STRING;
+        this.endDate = EMPTY_STRING;
+        this.taskIndex = NO_INDEX;
     }
 
     /**
@@ -45,10 +42,10 @@ public class ShadowCommand {
      */
     public ShadowCommand(CommandType commandType, int taskIndex) {
         this.commandType = commandType;
-        this.taskDescription = "";
-        this.dueDate = "";
-        this.startDate = "";
-        this.endDate = "";
+        this.taskDescription = EMPTY_STRING;
+        this.dueDate = EMPTY_STRING;
+        this.startDate = EMPTY_STRING;
+        this.endDate = EMPTY_STRING;
         this.taskIndex = taskIndex;
     }
 
@@ -59,10 +56,10 @@ public class ShadowCommand {
     public ShadowCommand(CommandType commandType, String taskDescription) {
         this.commandType = commandType;
         this.taskDescription = taskDescription;
-        this.dueDate = "";
-        this.startDate = "";
-        this.endDate = "";
-        this.taskIndex = -1;
+        this.dueDate = EMPTY_STRING;
+        this.startDate = EMPTY_STRING;
+        this.endDate = EMPTY_STRING;
+        this.taskIndex = NO_INDEX;
     }
 
     /**
@@ -73,9 +70,9 @@ public class ShadowCommand {
         this.commandType = commandType;
         this.taskDescription = taskDescription;
         this.dueDate = dueDate;
-        this.startDate = "";
-        this.endDate = "";
-        this.taskIndex = -1;
+        this.startDate = EMPTY_STRING;
+        this.endDate = EMPTY_STRING;
+        this.taskIndex = NO_INDEX;
     }
 
     /**
@@ -85,9 +82,9 @@ public class ShadowCommand {
     public ShadowCommand(CommandType commandType, String taskDescription, String startDate, String endDate) {
         this.commandType = commandType;
         this.taskDescription = taskDescription;
-        this.dueDate = "";
+        this.dueDate = EMPTY_STRING;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.taskIndex = -1;
+        this.taskIndex = NO_INDEX;
     }
 }

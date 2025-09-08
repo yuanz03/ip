@@ -12,6 +12,9 @@ import shadowbuddy.services.ShadowException;
  * and converts raw timestamps into a standardized format.
  */
 public class ShadowParser {
+    private static final String INPUT_DATE_PATTERN = "d/M/yyyy HHmm";
+    private static final String OUTPUT_DATE_PATTERN = "MMM d yyyy HH:mm";
+
     /**
      * Parses raw user input String into a ShadowCommand instance.
      * The user input is analyzed to identify the command type, before returning the corresponding
@@ -23,6 +26,11 @@ public class ShadowParser {
      */
     public static ShadowCommand parse(String input) throws ShadowException {
         assert input != null : "user input should not be null";
+        if (input.trim().isEmpty()) {
+            throw new ShadowException("Empty request! Try one of these commands: list, mark, unmark, todo, "
+                    + "delete, event, or deadline, and I'll handle it for you.\n");
+        }
+
         // Code reuse
         String[] inputDetails = input.split(" ");
         String requestType = inputDetails[0].toLowerCase();
@@ -139,8 +147,8 @@ public class ShadowParser {
      */
     private static String formatTaskDateTime(String timestamp) {
         assert timestamp != null : "timestamp should not be null";
-        DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm"); // code reuse
-        DateTimeFormatter taskOutputFormatter = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
+        DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN); // code reuse
+        DateTimeFormatter taskOutputFormatter = DateTimeFormatter.ofPattern(OUTPUT_DATE_PATTERN);
         LocalDateTime taskTimestamp = LocalDateTime.parse(timestamp, taskInputFormatter);
         return taskTimestamp.format(taskOutputFormatter);
     }
@@ -150,13 +158,13 @@ public class ShadowParser {
      * This helper function converts the given String into an integer used for TaskList indexing.
      *
      * @param index The String representing a numeric index.
-     * @return The parsed integer index, or -1 if parsing fails.
+     * @return The parsed integer index.
      */
-    private static int convertStringToIndex(String index) { // Code reuse
+    private static int convertStringToIndex(String index) throws ShadowException { // Code reuse
         try {
             return Integer.parseInt(index);
         } catch (NumberFormatException exception) {
-            return -1;
+            throw new ShadowException("Invalid task index! Please provide a numeric index for your request!\n");
         }
     }
 }

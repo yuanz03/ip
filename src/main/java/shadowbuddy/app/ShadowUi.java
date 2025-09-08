@@ -9,25 +9,14 @@ import shadowbuddy.taskmodels.TaskList;
  * and task-related confirmations, providing a single platform for handling communication.
  */
 public class ShadowUi {
-    /**
-     * Returns a friendly greeting and prompts the user for an input.
-     */
-    public String greetUsers() {
+    public String greetUser() {
         return "Hi, I'm Shadow, your personal assistant!\nWhat can I help you with today?\n";
     }
 
-    /**
-     * Returns a friendly goodbye message to the user.
-     */
     public String sayGoodbye() {
         return "\nGoodbye! I'll be here if you need anything else!";
     }
 
-    /**
-     * Displays all tasks in the given TaskList to the user.
-     *
-     * @param taskList The TaskList whose tasks will be displayed for the user.
-     */
     public String showTaskList(TaskList taskList) {
         return "\nHere are the tasks in your list:\n" + taskList;
     }
@@ -35,10 +24,10 @@ public class ShadowUi {
     /**
      * Displays all matching tasks from the given TaskList that match the specified keyword.
      *
-     * @param taskList The TaskList whose matching tasks will be displayed for the user.
+     * @param filteredTaskList The TaskList whose matching tasks will be displayed for the user.
      */
-    public String showMatchingTasks(TaskList taskList) {
-        return "\nHere are the matching tasks in your list:\n" + taskList;
+    public String showMatchingTasks(TaskList filteredTaskList) {
+        return "\nHere are the matching tasks in your list:\n" + filteredTaskList;
     }
 
     /**
