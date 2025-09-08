@@ -27,6 +27,7 @@ public class ShadowController {
      * @param storage The ShadowStorage instance used for loading and saving tasks.
      */
     public ShadowController(ShadowStorage storage) {
+        assert storage != null : "storage should not be null";
         this.storage = storage;
         this.taskList = new TaskList();
     }
@@ -49,6 +50,7 @@ public class ShadowController {
      * @throws ShadowException If the user input is syntactically invalid.
      */
     public ShadowCommand handleInput(String input) throws ShadowException {
+        assert input != null : "user input should not be null";
         return ShadowParser.parse(input);
     }
 
@@ -71,6 +73,8 @@ public class ShadowController {
      * @throws ShadowException If the command type is unknown or the task index is invalid.
      */
     public String executeCommand(ShadowCommand userCommand, ShadowUi ui) throws ShadowException {
+        assert userCommand != null : "userCommand should not be null";
+        assert ui != null : "ui should not be null";
         int taskIndex = userCommand.taskIndex;
         String taskDescription = userCommand.taskDescription;
         // Code reuse for switch structure
@@ -121,6 +125,7 @@ public class ShadowController {
      * @throws ShadowException If the TaskList is empty or the index is out of range.
      */
     private void validateTaskIndex(int taskIndex, int taskCount) throws ShadowException {
+        assert taskCount >= 0 : "taskCount should not be negative";
         if (taskCount == 0) {
             throw new ShadowException("ERROR! Your task list is empty!\n");
         } else if (taskIndex < 1 || taskIndex > taskCount) {

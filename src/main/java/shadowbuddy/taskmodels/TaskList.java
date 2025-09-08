@@ -23,6 +23,7 @@ public class TaskList {
      * @param task The Task to add to the TaskList.
      */
     public void addTask(Task task) {
+        assert task != null : "task should not be null";
         this.storage.add(task);
     }
 
@@ -64,6 +65,8 @@ public class TaskList {
      * @return A new TaskList containing all the matching tasks.
      */
     public TaskList getMatchingTasks(TaskList taskList, String keyword) {
+        assert taskList != null : "taskList should not be null";
+        assert keyword != null : "keyword should not be null";
         TaskList matchingTasks = new TaskList();
         for (int i = 0; i < taskList.getLength(); i++) {
             Task task = taskList.getTask(i + 1);
@@ -91,6 +94,8 @@ public class TaskList {
      * @return True if the keyword appears in the description; False otherwise.
      */
     private boolean containsKeyword(String description, String keyword) {
+        assert description != null : "description should not be null";
+        assert keyword != null : "keyword should not be null";
         String[] descriptionDetails = description.split(" ");
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < descriptionDetails.length; i++) {

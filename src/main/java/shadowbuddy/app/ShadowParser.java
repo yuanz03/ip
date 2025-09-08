@@ -22,6 +22,7 @@ public class ShadowParser {
      * @throws ShadowException If the user input is syntactically invalid.
      */
     public static ShadowCommand parse(String input) throws ShadowException {
+        assert input != null : "user input should not be null";
         // Code reuse
         String[] inputDetails = input.split(" ");
         String requestType = inputDetails[0].toLowerCase();
@@ -70,6 +71,7 @@ public class ShadowParser {
      * @throws ShadowException If "/by", description, or due date is missing, or the date format is invalid.
      */
     private static ShadowCommand parseDeadline(String requestDetails) throws ShadowException {
+        assert requestDetails != null : "deadline requestDetails should not be null";
         if (requestDetails.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your deadline.\n");
         } else if (!requestDetails.contains("/by")) {
@@ -99,6 +101,7 @@ public class ShadowParser {
      * @throws ShadowException If "/from", "/to", description, or dates are missing, or the date format is invalid.
      */
     private static ShadowCommand parseEvent(String requestDetails) throws ShadowException {
+        assert requestDetails != null : "event requestDetails should not be null";
         if (requestDetails.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your event.\n");
         } else if (!requestDetails.contains("/from") || !requestDetails.contains("/to")) {
@@ -135,6 +138,7 @@ public class ShadowParser {
      * @return A formatted String representation of the given task timestamp.
      */
     private static String formatTaskDateTime(String timestamp) {
+        assert timestamp != null : "timestamp should not be null";
         DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm"); // code reuse
         DateTimeFormatter taskOutputFormatter = DateTimeFormatter.ofPattern("MMM d yyyy HH:mm");
         LocalDateTime taskTimestamp = LocalDateTime.parse(timestamp, taskInputFormatter);
