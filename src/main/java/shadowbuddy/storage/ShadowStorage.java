@@ -29,6 +29,8 @@ public class ShadowStorage {
      * specified file path and uses it to store, write, and retrieve tasks.
      */
     public ShadowStorage(String filePath) {
+        assert filePath != null : "filePath should not be null";
+        assert !filePath.trim().isEmpty() : "filePath should not be empty";
         this.filePath = filePath;
         this.databaseFile = new File(this.filePath);
     }
@@ -87,6 +89,7 @@ public class ShadowStorage {
      * @throws IOException If the database file cannot be written to.
      */
     public void writeToDatabase(TaskList taskList) throws IOException {
+        assert taskList != null : "taskList should not be null";
         FileWriter taskWriter = new FileWriter(this.filePath);
         for (int i = 0; i < taskList.getLength(); i++) {
             Task task = taskList.getTask(i + 1);
@@ -106,6 +109,7 @@ public class ShadowStorage {
      * @throws FileNotFoundException If the database file cannot be found or read.
      */
     public void loadDatabase(TaskList taskList) throws FileNotFoundException {
+        assert taskList != null : "taskList should not be null";
         if (!this.databaseFile.exists()) {
             return;
         }
@@ -134,6 +138,7 @@ public class ShadowStorage {
      * @return A Task representing the given task data.
      */
     private Task createTask(String[] taskDetails) {
+        assert taskDetails != null : "taskDetails should not be null";
         String taskType = taskDetails[0];
         boolean isTaskDone = taskDetails[1].equals("1");
         String taskDescription = taskDetails[2];
@@ -169,6 +174,7 @@ public class ShadowStorage {
      * @return A single-line String representing the given Task.
      */
     private String formatTask(Task task) {
+        assert task != null : "task should not be null";
         String taskStatus = (task.getStatusIcon().equalsIgnoreCase("X")) ? "1" : "0";
 
         if (task instanceof Todo todo) { // code reuse
