@@ -13,6 +13,7 @@ public class Task {
      * Initializes a Task instance with the given description and default not-done state.
      */
     public Task(String description) {
+        assert description != null : "description should not be null";
         this.description = description;
         this.isDone = false;
     }

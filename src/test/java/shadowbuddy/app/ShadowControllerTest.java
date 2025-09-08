@@ -3,9 +3,13 @@ package shadowbuddy.app;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.nio.file.Path;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import shadowbuddy.services.ShadowException;
+import shadowbuddy.storage.ShadowStorage;
 
 public class ShadowControllerTest {
     private static final ShadowCommand MARK_COMMAND = new ShadowCommand(ShadowCommand.CommandType.MARK, 1);
@@ -20,18 +24,22 @@ public class ShadowControllerTest {
     private static final ShadowCommand UNKNOWN_COMMAND = new ShadowCommand(ShadowCommand.CommandType.UNKNOWN);
 
     @Test
-    public void execute_todoTaskCreation() throws ShadowException {
+    public void execute_todoTaskCreation(@TempDir Path tempDir) throws ShadowException { // code reuse
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
 
         dummyController.executeCommand(TODO_COMMAND, dummyUi);
         assertEquals("[T][ ] borrow book", dummyController.getTaskList().getTask(1).toString());
     }
 
     @Test
-    public void execute_deadlineTaskCreation() throws ShadowException {
+    public void execute_deadlineTaskCreation(@TempDir Path tempDir) throws ShadowException {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
 
         dummyController.executeCommand(DEADLINE_COMMAND, dummyUi);
         assertEquals("[D][ ] return book (by: Dec 2 2025 18:00)",
@@ -39,9 +47,11 @@ public class ShadowControllerTest {
     }
 
     @Test
-    public void execute_eventTaskCreation() throws ShadowException {
+    public void execute_eventTaskCreation(@TempDir Path tempDir) throws ShadowException {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
 
         dummyController.executeCommand(EVENT_COMMAND, dummyUi);
         assertEquals("[E][ ] project meeting (from: Jul 4 2025 16:00 to: Jul 5 2025 20:00)",
@@ -49,9 +59,11 @@ public class ShadowControllerTest {
     }
 
     @Test
-    public void execute_markTask() throws ShadowException {
+    public void execute_markTask(@TempDir Path tempDir) throws ShadowException {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
 
         dummyController.executeCommand(TODO_COMMAND, dummyUi);
         dummyController.executeCommand(MARK_COMMAND, dummyUi);
@@ -59,9 +71,11 @@ public class ShadowControllerTest {
     }
 
     @Test
-    public void execute_unmarkTask() throws ShadowException {
+    public void execute_unmarkTask(@TempDir Path tempDir) throws ShadowException {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
 
         dummyController.executeCommand(TODO_COMMAND, dummyUi);
         dummyController.executeCommand(MARK_COMMAND, dummyUi);
@@ -70,9 +84,11 @@ public class ShadowControllerTest {
     }
 
     @Test
-    public void execute_deleteTask() throws ShadowException {
+    public void execute_deleteTask(@TempDir Path tempDir) throws ShadowException {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
 
         dummyController.executeCommand(TODO_COMMAND, dummyUi);
         dummyController.executeCommand(DELETE_COMMAND, dummyUi);
@@ -80,9 +96,11 @@ public class ShadowControllerTest {
     }
 
     @Test
-    public void execute_emptyTaskList_exceptionThrown() {
+    public void execute_emptyTaskList_exceptionThrown(@TempDir Path tempDir) {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
 
         try {
             dummyController.executeCommand(MARK_COMMAND, dummyUi);
@@ -107,9 +125,12 @@ public class ShadowControllerTest {
     }
 
     @Test
-    public void execute_invalidTaskIndex_exceptionThrown() {
+    public void execute_invalidTaskIndex_exceptionThrown(@TempDir Path tempDir) {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
+
         ShadowCommand invalidMarkCommand = new ShadowCommand(ShadowCommand.CommandType.MARK, 2);
         ShadowCommand invalidUnmarkCommand = new ShadowCommand(ShadowCommand.CommandType.UNMARK, 3);
         ShadowCommand invalidDeleteCommand = new ShadowCommand(ShadowCommand.CommandType.DELETE, 4);
@@ -143,9 +164,11 @@ public class ShadowControllerTest {
     }
 
     @Test
-    public void execute_unknownCommand_exceptionThrown() {
+    public void execute_unknownCommand_exceptionThrown(@TempDir Path tempDir) {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
         ShadowUi dummyUi = new ShadowUi();
-        ShadowController dummyController = new ShadowController(null);
 
         try {
             dummyController.executeCommand(UNKNOWN_COMMAND, dummyUi);

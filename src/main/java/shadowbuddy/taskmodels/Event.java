@@ -18,6 +18,8 @@ public class Event extends Task {
      */
     public Event(String description, String startDate, String endDate) {
         super(description);
+        assert startDate != null : "startDate should not be null";
+        assert endDate != null : "endDate should not be null";
         this.startDate = startDate;
         this.endDate = endDate;
     }
