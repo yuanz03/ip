@@ -40,7 +40,7 @@ public class MainWindow extends AnchorPane {
     public void setShadow(Shadow shadow) {
         this.shadow = shadow;
         dialogContainer.getChildren().addAll(
-                DialogBox.getShadowDialog(shadow.greetUsers(), chatbotImage)
+                DialogBox.getShadowDialog(shadow.startShadowSession(), chatbotImage)
         );
     }
 

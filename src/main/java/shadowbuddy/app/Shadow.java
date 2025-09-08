@@ -2,7 +2,9 @@ package shadowbuddy.app;
 
 import java.io.IOException;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.util.Duration;
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
 
@@ -12,6 +14,7 @@ import shadowbuddy.storage.ShadowStorage;
  * It also provides methods to integrate with the GUI, manage the database, and handle UI interactions.
  */
 public class Shadow {
+    private static final int GOODBYE_DELAY = 1000;
     private final ShadowUi chatbotUi;
     private final ShadowController chatbotController;
     private final ShadowStorage taskStorage;
@@ -29,27 +32,25 @@ public class Shadow {
     }
 
     /**
-     * Returns a welcome message for users along with the existing tasks stored in the storage.
-     * The storage sets up the task database (creating it if needed), and then outputs it.
-     * The controller is responsible for loading the database into the TaskList.
+     * Starts a chatbot session by greeting the user and displaying the existing tasks stored in the storage.
+     * Delegates database setup and retrieval of tasks to a helper method.
      *
-     * @return The combined greeting message, confirmation message, and the contents of the task storage.
+     * @return The greeting message combined with the output of the database.
      */
-    public String greetUsers() {
-        String greeting = chatbotUi.greetUsers();
+    public String startShadowSession() {
+        String greeting = chatbotUi.greetUser();
         try {
-            String confirmationMessage = taskStorage.createDatabase();
-            chatbotController.loadDatabase();
-            return greeting + "\n" + confirmationMessage + "\n" + taskStorage.outputDatabase();
+            String databaseOutput = prepareDatabaseOutput();
+            return greeting + "\n" + databaseOutput;
         } catch (IOException exception) {
-            return exception.getMessage();
+            return "Oops! Something went wrong when starting the chatbot session: " + exception.getMessage();
         }
     }
 
     /**
      * Processes user input and returns the Shadow chatbot's response.
-     * If the user inputs "bye", a Thread is created that waits for one second before terminating the
-     * JavaFX application. This short delay ensures the chatbot has time to display its goodbye message.
+     * If the user inputs "bye", the chatbot schedules a short delay before terminating the
+     * JavaFX application. This ensures the chatbot has time to display its goodbye message.
      * Each recognized command is handled and executed by the controller.
      * The resulting output is both displayed to the user and saved to storage.
      *
@@ -57,16 +58,10 @@ public class Shadow {
      * @return The chatbot's textual response, generated from executing the user's command.
      */
     public String getResponse(String userInput) {
-        if (userInput.equalsIgnoreCase("bye")) {
-            new Thread(() -> { // code reuse
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException exception) {
-                    exception.printStackTrace();
-                }
-                Platform.exit();
-            }).start();
-
+        if (userInput.equalsIgnoreCase("bye")) { // code reuse (initial was thread)
+            PauseTransition exitDelay = new PauseTransition(Duration.millis(GOODBYE_DELAY));
+            exitDelay.setOnFinished(event -> Platform.exit());
+            exitDelay.play();
             return chatbotUi.sayGoodbye();
         }
 
@@ -78,5 +73,19 @@ public class Shadow {
         } catch (ShadowException | IOException exception) {
             return exception.getMessage();
         }
+    }
+
+    /**
+     * Prepares and returns the tasks stored in the database.
+     * This helper function sets up the task database (creating it if needed),
+     * loads it into the TaskList, and then outputs it.
+     *
+     * @return The confirmation message combined with the existing tasks in the database.
+     * @throws IOException If the database file cannot be created, found or read.
+     */
+    private String prepareDatabaseOutput() throws IOException {
+        String confirmationMessage = taskStorage.createDatabase();
+        chatbotController.loadDatabase();
+        return confirmationMessage + "\n" + taskStorage.outputDatabase();
     }
 }
