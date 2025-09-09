@@ -1,6 +1,7 @@
 package shadowbuddy.taskmodels;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Manages an ordered collection of Task instances.
@@ -9,12 +10,14 @@ import java.util.ArrayList;
  */
 public class TaskList {
     protected final ArrayList<Task> storage;
+    protected final HashSet<String> uniqueDescriptions;
 
     /**
      * Initializes an empty TaskList instance with a pre-allocated capacity of 100 elements.
      */
     public TaskList() {
         this.storage = new ArrayList<>(100);
+        this.uniqueDescriptions = new HashSet<>();
     }
 
     /**
@@ -25,6 +28,7 @@ public class TaskList {
     public void addTask(Task task) {
         assert task != null : "task should not be null";
         this.storage.add(task);
+        this.uniqueDescriptions.add(task.getDescription());
     }
 
     /**
@@ -34,7 +38,9 @@ public class TaskList {
      * @return The Task that was removed from the TaskList.
      */
     public Task deleteTask(int index) {
-        return this.storage.remove(index - 1);
+        Task deletedTask = this.storage.remove(index - 1);
+        this.uniqueDescriptions.remove(deletedTask.getDescription());
+        return deletedTask;
     }
 
     /**
@@ -75,6 +81,17 @@ public class TaskList {
             }
         }
         return matchingTasks;
+    }
+
+    /**
+     * Returns true when the given task description already exists in the TaskList.
+     *
+     * @param taskDescription The task description being checked.
+     * @return True if a task with the same description already exists; False otherwise.
+     */
+    public boolean containsDuplicate(String taskDescription) {
+        assert taskDescription != null : "taskDescription should not be null";
+        return this.uniqueDescriptions.contains(taskDescription);
     }
 
     public Task getTask(int index) {

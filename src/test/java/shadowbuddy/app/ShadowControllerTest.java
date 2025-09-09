@@ -145,7 +145,7 @@ public class ShadowControllerTest {
         }
 
         try {
-            dummyController.executeCommand(TODO_COMMAND, dummyUi);
+            dummyController.executeCommand(DEADLINE_COMMAND, dummyUi);
             dummyController.executeCommand(invalidUnmarkCommand, dummyUi);
             fail();
         } catch (ShadowException exception) {
@@ -154,7 +154,7 @@ public class ShadowControllerTest {
         }
 
         try {
-            dummyController.executeCommand(TODO_COMMAND, dummyUi);
+            dummyController.executeCommand(EVENT_COMMAND, dummyUi);
             dummyController.executeCommand(invalidDeleteCommand, dummyUi);
             fail();
         } catch (ShadowException exception) {

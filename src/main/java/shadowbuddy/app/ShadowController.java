@@ -43,6 +43,16 @@ public class ShadowController {
     }
 
     /**
+     * Writes the controller's current TaskList to the internal storage.
+     * Relies on ShadowStorage to save the internal TaskList contents to the database file.
+     *
+     * @throws IOException If the database file cannot be written to.
+     */
+    public void writeToDatabase() throws IOException {
+        this.storage.writeToDatabase(this.taskList);
+    }
+
+    /**
      * Returns a ShadowCommand instance parsed from the given raw input String by ShadowParser.
      *
      * @param input The raw user input String to parse.
@@ -52,14 +62,6 @@ public class ShadowController {
     public ShadowCommand handleInput(String input) throws ShadowException {
         assert input != null : "user input should not be null";
         return ShadowParser.parse(input);
-    }
-
-    /**
-     * Returns the controller's internal TaskList.
-     * This protected getter is solely provided to facilitate unit testing of the ShadowController class.
-     */
-    protected TaskList getTaskList() {
-        return this.taskList;
     }
 
     /**
@@ -75,7 +77,7 @@ public class ShadowController {
     public String executeCommand(ShadowCommand userCommand, ShadowUi ui) throws ShadowException {
         assert userCommand != null : "userCommand should not be null";
         assert ui != null : "ui should not be null";
-        String taskDescription = userCommand.taskDescription;
+        String taskDescription = userCommand.taskDescription.trim();
         // Code reuse for switch structure
         switch (userCommand.commandType) {
         case LIST:
@@ -99,14 +101,17 @@ public class ShadowController {
             TaskList matchingTasks = this.taskList.getMatchingTasks(this.taskList, taskDescription);
             return ui.showMatchingTasks(matchingTasks);
         case TODO:
+            validateTaskDescription(taskDescription);
             Task todo = new Todo(taskDescription);
             this.taskList.addTask(todo);
             return ui.showTaskCreationMessage(todo, this.taskList.getLength());
         case DEADLINE:
+            validateTaskDescription(taskDescription);
             Task deadline = new Deadline(taskDescription, userCommand.dueDate);
             this.taskList.addTask(deadline);
             return ui.showTaskCreationMessage(deadline, this.taskList.getLength());
         case EVENT:
+            validateTaskDescription(taskDescription);
             Task event = new Event(taskDescription, userCommand.startDate, userCommand.endDate);
             this.taskList.addTask(event);
             return ui.showTaskCreationMessage(event, this.taskList.getLength());
@@ -116,6 +121,14 @@ public class ShadowController {
             throw new ShadowException("Unknown request! Try one of these commands: list, mark, unmark, todo, "
                     + "delete, event, or deadline, and I'll handle it for you.\n");
         }
+    }
+
+    /**
+     * Returns the controller's internal TaskList.
+     * This protected getter is solely provided to facilitate unit testing of the ShadowController class.
+     */
+    protected TaskList getTaskList() {
+        return this.taskList;
     }
 
     /**
@@ -136,12 +149,15 @@ public class ShadowController {
     }
 
     /**
-     * Writes the controller's current TaskList to the internal storage.
-     * Relies on ShadowStorage to save the internal TaskList contents to the database file.
+     * Validates that the given task description is unique within the TaskList.
+     * This helper function validates task descriptions used for todo, deadline, and event commands.
      *
-     * @throws IOException If the database file cannot be written to.
+     * @param taskDescription The description of the task to validate.
+     * @throws ShadowException If duplicate task descriptions are detected.
      */
-    public void writeToDatabase() throws IOException {
-        this.storage.writeToDatabase(this.taskList);
+    private void validateTaskDescription(String taskDescription) throws ShadowException {
+        if (this.taskList.containsDuplicate(taskDescription)) {
+            throw new ShadowException("Invalid request! A task with this description already exists!\n");
+        }
     }
 }
