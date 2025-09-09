@@ -77,7 +77,7 @@ public class ShadowController {
     public String executeCommand(ShadowCommand userCommand, ShadowUi ui) throws ShadowException {
         assert userCommand != null : "userCommand should not be null";
         assert ui != null : "ui should not be null";
-        String taskDescription = userCommand.taskDescription;
+        String taskDescription = userCommand.taskDescription.trim();
         // Code reuse for switch structure
         switch (userCommand.commandType) {
         case LIST:
@@ -101,17 +101,17 @@ public class ShadowController {
             TaskList matchingTasks = this.taskList.getMatchingTasks(this.taskList, taskDescription);
             return ui.showMatchingTasks(matchingTasks);
         case TODO:
-            checkForDuplicates(taskDescription);
+            validateTaskDescription(taskDescription);
             Task todo = new Todo(taskDescription);
             this.taskList.addTask(todo);
             return ui.showTaskCreationMessage(todo, this.taskList.getLength());
         case DEADLINE:
-            checkForDuplicates(taskDescription);
+            validateTaskDescription(taskDescription);
             Task deadline = new Deadline(taskDescription, userCommand.dueDate);
             this.taskList.addTask(deadline);
             return ui.showTaskCreationMessage(deadline, this.taskList.getLength());
         case EVENT:
-            checkForDuplicates(taskDescription);
+            validateTaskDescription(taskDescription);
             Task event = new Event(taskDescription, userCommand.startDate, userCommand.endDate);
             this.taskList.addTask(event);
             return ui.showTaskCreationMessage(event, this.taskList.getLength());
@@ -148,9 +148,16 @@ public class ShadowController {
         }
     }
 
-    private void checkForDuplicates(String taskDescription) throws ShadowException {
-        if (this.taskList.checkDuplicates(taskDescription)) {
-            throw new ShadowException("Duplicates found!\n");
+    /**
+     * Validates that the given task description is unique within the TaskList.
+     * This helper function validates task descriptions used for todo, deadline, and event commands.
+     *
+     * @param taskDescription The description of the task to validate.
+     * @throws ShadowException If duplicate task descriptions are detected.
+     */
+    private void validateTaskDescription(String taskDescription) throws ShadowException {
+        if (this.taskList.containsDuplicate(taskDescription)) {
+            throw new ShadowException("Invalid request! A task with this description already exists!\n");
         }
     }
 }
