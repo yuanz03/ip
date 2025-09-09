@@ -77,6 +77,17 @@ public class TaskList {
         return matchingTasks;
     }
 
+    public boolean checkDuplicates(String taskDescription) {
+        assert taskDescription != null : "taskDescription should not be null";
+        for (int i = 0; i < this.getLength(); i++) {
+            Task task = this.getTask(i + 1);
+            if (taskDescription.equalsIgnoreCase(task.getDescription())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Task getTask(int index) {
         return this.storage.get(index - 1);
     }
