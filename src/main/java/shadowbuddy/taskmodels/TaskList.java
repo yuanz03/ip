@@ -132,7 +132,8 @@ public class TaskList {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < this.storage.size(); i++) { // Code reuse
+        // Solution below inspired from a ChatGPT example on how to use StringBuilder with multiple appends
+        for (int i = 0; i < this.storage.size(); i++) {
             sb.append(i + 1).append(". ").append(this.storage.get(i)).append("\n");
         }
         return sb.toString();

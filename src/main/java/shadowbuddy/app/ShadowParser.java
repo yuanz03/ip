@@ -12,6 +12,7 @@ import shadowbuddy.services.ShadowException;
  * and converts raw timestamps into a standardized format.
  */
 public class ShadowParser {
+    // Statement below adapted from a ChatGPT example on how to define a strict date format for user input
     private static final String INPUT_DATE_PATTERN = "d/M/yyyy HHmm";
     private static final String OUTPUT_DATE_PATTERN = "MMM d yyyy HH:mm";
 
@@ -31,11 +32,10 @@ public class ShadowParser {
                     + "delete, event, or deadline, and I'll handle it for you.\n");
         }
 
-        // Code reuse
         String[] inputDetails = input.split(" ");
         String requestType = inputDetails[0].toLowerCase();
         String requestDetails = inputDetails.length > 1 ? input.substring(requestType.length() + 1) : "";
-        // Code reuse for switch structure and return statement
+        // Solution below inspired from a ChatGPT example on how to use a switch structure with return statements
         switch (requestType) {
         case "list":
             return new ShadowCommand(ShadowCommand.CommandType.LIST);
@@ -147,7 +147,7 @@ public class ShadowParser {
      */
     private static String formatTaskDateTime(String timestamp) {
         assert timestamp != null : "timestamp should not be null";
-        DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN); // code reuse
+        DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
         DateTimeFormatter taskOutputFormatter = DateTimeFormatter.ofPattern(OUTPUT_DATE_PATTERN);
         LocalDateTime taskTimestamp = LocalDateTime.parse(timestamp, taskInputFormatter);
         return taskTimestamp.format(taskOutputFormatter);
@@ -160,7 +160,8 @@ public class ShadowParser {
      * @param index The String representing a numeric index.
      * @return The parsed integer index.
      */
-    private static int convertStringToIndex(String index) throws ShadowException { // Code reuse
+    private static int convertStringToIndex(String index) throws ShadowException {
+        // Solution below inspired from a ChatGPT example on how to use parseInt to convert Strings to numbers
         try {
             return Integer.parseInt(index);
         } catch (NumberFormatException exception) {

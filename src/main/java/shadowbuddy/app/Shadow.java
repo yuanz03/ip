@@ -58,7 +58,9 @@ public class Shadow {
      * @return The chatbot's textual response, generated from executing the user's command.
      */
     public String getResponse(String userInput) {
-        if (userInput.equalsIgnoreCase("bye")) { // code reuse (initial was thread)
+        // Solution below adapted from a ChatGPT example on how to delay exiting from a JavaFx application
+        // Initial thread-based approach was replaced to ensure thread safety as per code quality standards
+        if (userInput.equalsIgnoreCase("bye")) {
             PauseTransition exitDelay = new PauseTransition(Duration.millis(GOODBYE_DELAY));
             exitDelay.setOnFinished(event -> Platform.exit());
             exitDelay.play();
