@@ -14,11 +14,11 @@ public class ShadowUi {
     }
 
     public String sayGoodbye() {
-        return "\nGoodbye! I'll be here if you need anything else!";
+        return "Goodbye! I'll be here if you need anything else!";
     }
 
     public String showTaskList(TaskList taskList) {
-        return "\nHere are the tasks in your list:\n" + taskList;
+        return "Here are the tasks in your list:\n" + taskList;
     }
 
     /**
@@ -27,7 +27,7 @@ public class ShadowUi {
      * @param filteredTaskList The TaskList whose matching tasks will be displayed for the user.
      */
     public String showMatchingTasks(TaskList filteredTaskList) {
-        return "\nHere are the matching tasks in your list:\n" + filteredTaskList;
+        return "Here are the matching tasks in your list:\n" + filteredTaskList;
     }
 
     /**
@@ -37,7 +37,7 @@ public class ShadowUi {
      * @param task The Task that was marked as done.
      */
     public String showMarkConfirmationMessage(Task task) {
-        return "\nNice! I've marked this task as done:\n  " + task + "\n";
+        return "Nice! I've marked this task as done:\n  " + task + "\n";
     }
 
     /**
@@ -47,7 +47,7 @@ public class ShadowUi {
      * @param task The Task that was marked as not done.
      */
     public String showUnmarkConfirmationMessage(Task task) {
-        return "\nOK, I've marked this task as not done:\n  " + task + "\n";
+        return "OK, I've marked this task as not done:\n  " + task + "\n";
     }
 
     /**
@@ -58,7 +58,7 @@ public class ShadowUi {
      * @param taskCount The number of tasks remaining in the task list.
      */
     public String showDeleteConfirmationMessage(Task task, int taskCount) {
-        return "\nNoted. I've removed this task:\n  " + task + "\nNow you have " + taskCount + " tasks in the list.\n";
+        return "Noted. I've removed this task:\n  " + task + "\nNow you have " + taskCount + " tasks in the list.\n";
     }
 
     /**
@@ -69,6 +69,6 @@ public class ShadowUi {
      * @param taskCount The updated number of tasks in the task list.
      */
     public String showTaskCreationMessage(Task task, int taskCount) {
-        return "\nGot it. I've added this task:\n  " + task + "\nNow you have " + taskCount + " tasks in the list.\n";
+        return "Got it. I've added this task:\n  " + task + "\nNow you have " + taskCount + " tasks in the list.\n";
     }
 }
