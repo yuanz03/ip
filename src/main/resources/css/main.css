@@ -2,7 +2,8 @@
     main-color: linear-gradient(to bottom right, #1a0f2b, #3b0a45, #5c1c70);
     -fx-background-color: main-color;
     -fx-background-image: url("../images/ChatbotBackground.jpg");
-    -fx-background-size: stretch;
+    -fx-background-size: 400px 600px;
+    -fx-background-repeat: round;
 }
 
 .text-field {
@@ -18,12 +19,12 @@
 }
 
 .button:hover {
-    -fx-background-color:cyan;
+    -fx-background-color: #FFBF00;
     -fx-font-size: 18px;
 }
 
 .button:pressed {
-    -fx-background-color:radial-gradient(radius 100%, blue, red, orange);
+    -fx-background-color: #40C421;
     -fx-font-size: 20px;
 }
 
