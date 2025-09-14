@@ -11,7 +11,8 @@ public class ShadowCommand {
      * The CommandType enum lists commands for creating and updating tasks,
      * with UNKNOWN serving as a fallback for unrecognized input.
      */
-    public enum CommandType { LIST, MARK, UNMARK, DELETE, FIND, TODO, DEADLINE, EVENT, UNKNOWN } // code reuse
+    // Statement below inspired from a ChatGPT example on how to use enum types as commands
+    public enum CommandType { LIST, MARK, UNMARK, DELETE, FIND, TODO, DEADLINE, EVENT, UNKNOWN }
 
     private static final String EMPTY_STRING = "";
     private static final int NO_INDEX = -1;

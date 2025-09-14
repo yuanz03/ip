@@ -44,7 +44,8 @@ public class ShadowStorage {
      */
     public String createDatabase() throws IOException {
         File parentFile = this.databaseFile.getParentFile();
-        boolean isFolderCreated = parentFile != null && parentFile.mkdirs(); // code reuse
+        // Statement below inspired from a ChatGPT example on creating a directory when it is missing
+        boolean isFolderCreated = parentFile != null && parentFile.mkdirs();
 
         if (this.databaseFile.createNewFile()) {
             return isFolderCreated
@@ -115,7 +116,9 @@ public class ShadowStorage {
 
         Scanner fileScanner = new Scanner(this.databaseFile);
         while (fileScanner.hasNextLine()) {
-            String[] taskDetails = fileScanner.nextLine().split("\\|"); // code reuse
+            // Statement below inspired from a ChatGPT example on how to split strings on the "|" character
+            String[] taskDetails = fileScanner.nextLine().split("\\|");
+
             for (int i = 0; i < taskDetails.length; i++) {
                 taskDetails[i] = taskDetails[i].trim();
             }
@@ -172,7 +175,8 @@ public class ShadowStorage {
         assert task != null : "task should not be null";
         String taskStatus = (task.getStatusIcon().equalsIgnoreCase("X")) ? "1" : "0";
 
-        if (task instanceof Todo todo) { // code reuse
+        // Solution below inspired from a ChatGPT example on handling multiple object types in a single conditional
+        if (task instanceof Todo todo) {
             return "T | " + taskStatus + " | " + todo.getDescription();
         } else if (task instanceof Deadline deadline) {
             return "D | " + taskStatus + " | " + deadline.getDescription() + " | " + deadline.getDueDate();

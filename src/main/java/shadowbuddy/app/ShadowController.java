@@ -78,7 +78,7 @@ public class ShadowController {
         assert userCommand != null : "userCommand should not be null";
         assert ui != null : "ui should not be null";
         String taskDescription = userCommand.taskDescription.trim();
-        // Code reuse for switch structure
+        // Solution below inspired from a ChatGPT example on how to use a switch structure to toggle between commands
         switch (userCommand.commandType) {
         case LIST:
             return ui.showTaskList(this.taskList);
