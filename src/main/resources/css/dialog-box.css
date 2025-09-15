@@ -1,6 +1,7 @@
 .label {
     -fx-background-color: linear-gradient(to bottom right, #8E2DE2, #4A00E0);
     -fx-border-color: #984DFF;
+    -fx-font: 16px "Comic Sans MS";
     -fx-text-fill: white;
     -fx-border-width: 2px;
     -fx-background-radius: 1em 1em 0 1em;

@@ -25,9 +25,9 @@ public class MainWindow extends AnchorPane {
     /** Shadow chatbot instance used to generate responses */
     private Shadow shadow;
     /** Avatar profile image displayed for the user */
-    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/User.jpg"));
+    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/User.png"));
     /** Avatar profile image displayed for the chatbot */
-    private final Image chatbotImage = new Image(this.getClass().getResourceAsStream("/images/Shadow.jpg"));
+    private final Image chatbotImage = new Image(this.getClass().getResourceAsStream("/images/Shadow.png"));
 
     @FXML
     public void initialize() {
