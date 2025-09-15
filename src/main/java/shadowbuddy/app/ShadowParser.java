@@ -27,14 +27,15 @@ public class ShadowParser {
      */
     public static ShadowCommand parse(String input) throws ShadowException {
         assert input != null : "user input should not be null";
-        if (input.trim().isEmpty()) {
+        String userInput = input.trim();
+        if (userInput.isEmpty()) {
             throw new ShadowException("Empty request! Try one of these commands: list, mark, unmark, todo, "
                     + "delete, event, or deadline, and I'll handle it for you.\n");
         }
 
-        String[] inputDetails = input.split(" ");
+        String[] inputDetails = userInput.split(" ");
         String requestType = inputDetails[0].toLowerCase();
-        String requestDetails = inputDetails.length > 1 ? input.substring(requestType.length() + 1) : "";
+        String requestDetails = inputDetails.length > 1 ? userInput.substring(requestType.length() + 1) : "";
         // Solution below inspired from a ChatGPT example on how to use a switch structure with return statements
         switch (requestType) {
         case "list":
