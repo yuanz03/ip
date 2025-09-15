@@ -52,7 +52,7 @@ public class ShadowParser {
             int deleteIndex = convertStringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.DELETE, deleteIndex);
         case "find":
-            validateSingleKeyword(inputDetails.length, requestDetails);
+            validateSingleKeyword(inputDetails.length - 1, requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.FIND, requestDetails);
         case "todo":
             validateNonEmptyRequest(requestDetails, "todo");
@@ -87,7 +87,7 @@ public class ShadowParser {
             String formattedDueDate = validateAndFormatDateRange(deadlineDetails[1].trim())[0];
             return new ShadowCommand(ShadowCommand.CommandType.DEADLINE, deadlineDetails[0].trim(), formattedDueDate);
         } catch (DateTimeParseException exception) {
-            throw new ShadowException("Invalid due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
+            throw new ShadowException("Invalid due date! " + DEADLINE_FORMAT);
         }
     }
 
@@ -112,29 +112,52 @@ public class ShadowParser {
         validateNonEmptyDate(eventTimings, 1, "end", EVENT_FORMAT);
 
         try {
-            String [] formattedDates = validateAndFormatDateRange(eventTimings[0].trim(), eventTimings[1].trim());
-            return new ShadowCommand(ShadowCommand.CommandType.EVENT, eventDetails[0].trim(),
-                    formattedDates[0], formattedDates[1]);
+            String[] formattedDates = validateAndFormatDateRange(eventTimings[0].trim(), eventTimings[1].trim());
+            return new ShadowCommand(ShadowCommand.CommandType.EVENT, eventDetails[0].trim(), formattedDates[0],
+                    formattedDates[1]);
         } catch (DateTimeParseException exception) {
-            throw new ShadowException("Invalid start or end date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
+            throw new ShadowException("Invalid start or end date! " + EVENT_FORMAT);
         }
     }
 
+    /**
+     * Validates that exactly one keyword has been supplied for the FIND command.
+     *
+     * @param keywordCount The number of keywords in the FIND command.
+     * @param details The trailing input after the find keyword.
+     * @throws ShadowException If the keyword is missing or if more than one keyword is provided.
+     */
     private static void validateSingleKeyword(int keywordCount, String details) throws ShadowException {
         if (details.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a keyword for your find.\n");
-        } else if (keywordCount > 2) {
+        }
+
+        if (keywordCount > 1) {
             throw new ShadowException("Invalid request! Please provide only ONE keyword for your find.\n");
         }
     }
 
+    /**
+     * Validates that a non-empty description exists for TODO, DEADLINE, and EVENT commands.
+     *
+     * @param details The trailing input after the todo, deadline, or event keyword.
+     * @param taskType The type of the task being validated.
+     * @throws ShadowException If the task description is empty.
+     */
     private static void validateNonEmptyRequest(String details, String taskType) throws ShadowException {
         if (details.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your " + taskType + ".\n");
         }
     }
 
+    /**
+     * Validates that the given marker appears exactly once in the task details for DEADLINE and EVENT commands.
+     *
+     * @param details The trailing input after the deadline or event keyword.
+     * @param marker The date marker of the task ("/by", "/from", "/to").
+     * @param msg The error message to include in the exception thrown when the marker is missing or duplicated.
+     * @throws ShadowException If the marker is not present or appears more than once.
+     */
     private static void validateUniqueMarkerPresence(String details, String marker, String msg) throws ShadowException {
         if (!details.contains(marker)) {
             throw new ShadowException("Invalid format! " + msg);
@@ -145,6 +168,15 @@ public class ShadowParser {
         }
     }
 
+    /**
+     * Validates that the appropriate date exists for DEADLINE and EVENT commands.
+     *
+     * @param data The parts of the task details separated by the date markers.
+     * @param index The position in the array where the appropriate date should be found.
+     * @param type The type of the date being validated.
+     * @param msg The error message to include in the exception thrown when the date is missing.
+     * @throws ShadowException If the expected date is missing.
+     */
     private static void validateNonEmptyDate(String[] data, int index, String type, String msg) throws ShadowException {
         if (data.length <= index || data[index].trim().isEmpty()) {
             throw new ShadowException("Missing " + type + " date! " + msg);
@@ -152,14 +184,16 @@ public class ShadowParser {
     }
 
     /**
-     * Returns a String representing the given task timestamp, formatted as "MMM d yyyy HH:mm".
-     * Validates that the given start and end dates form a valid chronological range.
+     * Returns a String array containing the formatted timestamp(s) for the given input timestamp(s).
+     * Array length is 1 for a single deadline due date, or 2 for an event start and end date.
+     * If given two timestamps, validate that they form a valid chronological range.
      * This helper function converts the given timestamp using the DateTimeFormatter class.
      *
-     * @param timestamps The start date of the event in "d/M/yyyy HHmm" format.
-     * @return A formatted String representation of the given task timestamp.
-     * @throws ShadowException If the end date is before the start date.
+     * @param timestamps One or two timestamps in "d/M/yyyy HHmm" format.
+     * @return An array of formatted timestamps in "MMM d yyyy HH:mm" format.
+     * @throws ShadowException If two timestamps are supplied and the end date is before the start date.
      */
+    // Solution below inspired from a ChatGPT example on how to use varargs and return a String array
     private static String[] validateAndFormatDateRange(String... timestamps) throws ShadowException {
         assert timestamps != null : "timestamps should not be null";
         DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
@@ -176,7 +210,7 @@ public class ShadowParser {
             }
             return new String[] { startDate.format(taskOutputFormatter), endDate.format(taskOutputFormatter) };
         } else {
-            throw new IllegalArgumentException("validateAndFormatDateRange expects only 1 or 2 timestamps!\n");
+            throw new IllegalArgumentException("validateAndFormatDateRange method expects only 1 or 2 timestamps!\n");
         }
     }
 
@@ -186,6 +220,7 @@ public class ShadowParser {
      *
      * @param index The String representing a numeric index.
      * @return The parsed integer index.
+     * @throws ShadowException If the given String is not a valid integer representation.
      */
     private static int convertStringToIndex(String index) throws ShadowException {
         // Solution below inspired from a ChatGPT example on how to use parseInt to convert Strings to numbers
