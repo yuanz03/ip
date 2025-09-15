@@ -15,6 +15,8 @@ public class ShadowParser {
     // Statement below adapted from a ChatGPT example on how to define a strict date format for user input
     private static final String INPUT_DATE_PATTERN = "d/M/yyyy HHmm";
     private static final String OUTPUT_DATE_PATTERN = "MMM d yyyy HH:mm";
+    private static final String DEADLINE_FORMAT = "Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n";
+    private static final String EVENT_FORMAT = "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n";
 
     /**
      * Parses raw user input String into a ShadowCommand instance.
@@ -50,16 +52,10 @@ public class ShadowParser {
             int deleteIndex = convertStringToIndex(requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.DELETE, deleteIndex);
         case "find":
-            if (requestDetails.isEmpty()) {
-                throw new ShadowException("Invalid request! Please provide a keyword for your find.\n");
-            } else if (inputDetails.length > 2) {
-                throw new ShadowException("Invalid request! Please provide only ONE keyword for your find.\n");
-            }
+            validateSingleKeyword(inputDetails.length, requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.FIND, requestDetails);
         case "todo":
-            if (requestDetails.isEmpty()) {
-                throw new ShadowException("Invalid request! Please provide a description for your todo.\n");
-            }
+            validateNonEmptyRequest(requestDetails, "todo");
             return new ShadowCommand(ShadowCommand.CommandType.TODO, requestDetails);
         case "deadline":
             return parseDeadline(requestDetails);
@@ -81,25 +77,14 @@ public class ShadowParser {
      */
     private static ShadowCommand parseDeadline(String requestDetails) throws ShadowException {
         assert requestDetails != null : "deadline requestDetails should not be null";
-        if (requestDetails.isEmpty()) {
-            throw new ShadowException("Invalid request! Please provide a description for your deadline.\n");
-        }
-
-        if (!requestDetails.contains("/by")) {
-            throw new ShadowException("Invalid format! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
-        }
-
-        if (requestDetails.indexOf("/by") != requestDetails.lastIndexOf("/by")) {
-            throw new ShadowException("Duplicate '/by' found! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
-        }
+        validateNonEmptyRequest(requestDetails, "deadline");
+        validateUniqueMarkerPresence(requestDetails, "/by", DEADLINE_FORMAT);
 
         String[] deadlineDetails = requestDetails.split("/by");
-        if (deadlineDetails.length < 2 || deadlineDetails[1].trim().isEmpty()) {
-            throw new ShadowException("Missing due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
-        }
+        validateNonEmptyDate(deadlineDetails, 1, "due", DEADLINE_FORMAT);
 
         try {
-            String formattedDueDate = formatTaskDateTime(deadlineDetails[1].trim());
+            String formattedDueDate = validateAndFormatDateRange(deadlineDetails[1].trim())[0];
             return new ShadowCommand(ShadowCommand.CommandType.DEADLINE, deadlineDetails[0].trim(), formattedDueDate);
         } catch (DateTimeParseException exception) {
             throw new ShadowException("Invalid due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
@@ -117,78 +102,82 @@ public class ShadowParser {
      */
     private static ShadowCommand parseEvent(String requestDetails) throws ShadowException {
         assert requestDetails != null : "event requestDetails should not be null";
-        if (requestDetails.isEmpty()) {
-            throw new ShadowException("Invalid request! Please provide a description for your event.\n");
-        }
-
-        if (!requestDetails.contains("/from") || !requestDetails.contains("/to")) {
-            throw new ShadowException("Invalid format! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
-        }
-
-        if (requestDetails.indexOf("/from") != requestDetails.lastIndexOf("/from")) {
-            throw new ShadowException("Duplicate '/from' found! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
-        }
-
-        if (requestDetails.indexOf("/to") != requestDetails.lastIndexOf("/to")) {
-            throw new ShadowException("Duplicate '/to' found! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
-        }
+        validateNonEmptyRequest(requestDetails, "event");
+        validateUniqueMarkerPresence(requestDetails, "/from", EVENT_FORMAT);
+        validateUniqueMarkerPresence(requestDetails, "/to", EVENT_FORMAT);
 
         String[] eventDetails = requestDetails.split("/from");
         String[] eventTimings = eventDetails[1].split("/to");
-        if (eventTimings[0].trim().isEmpty()) {
-            throw new ShadowException("Missing start date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
-        }
-
-        if (eventTimings.length < 2 || eventTimings[1].trim().isEmpty()) {
-            throw new ShadowException("Missing end date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
-        }
+        validateNonEmptyDate(eventTimings, 0, "start", EVENT_FORMAT);
+        validateNonEmptyDate(eventTimings, 1, "end", EVENT_FORMAT);
 
         try {
-            validateDateRange(eventTimings[0].trim(), eventTimings[1].trim());
-            String formattedStartDate = formatTaskDateTime(eventTimings[0].trim());
-            String formattedEndDate = formatTaskDateTime(eventTimings[1].trim());
+            String [] formattedDates = validateAndFormatDateRange(eventTimings[0].trim(), eventTimings[1].trim());
             return new ShadowCommand(ShadowCommand.CommandType.EVENT, eventDetails[0].trim(),
-                    formattedStartDate, formattedEndDate);
+                    formattedDates[0], formattedDates[1]);
         } catch (DateTimeParseException exception) {
             throw new ShadowException("Invalid start or end date! "
                     + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
         }
     }
 
-    /**
-     * Validates that the given start and end dates form a valid chronological range.
-     *
-     * @param startDate The start date of the event.
-     * @param endDate The end date of the event.
-     * @throws ShadowException If the end date is before the start date.
-     */
-    private static void validateDateRange(String startDate, String endDate) throws ShadowException {
-        DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
-        LocalDateTime startTimestamp = LocalDateTime.parse(startDate, taskInputFormatter);
-        LocalDateTime endTimestamp = LocalDateTime.parse(endDate, taskInputFormatter);
-        if (endTimestamp.isBefore(startTimestamp)) {
-            throw new ShadowException("Invalid event dates! Start date must be before end date!\n");
+    private static void validateSingleKeyword(int keywordCount, String details) throws ShadowException {
+        if (details.isEmpty()) {
+            throw new ShadowException("Invalid request! Please provide a keyword for your find.\n");
+        } else if (keywordCount > 2) {
+            throw new ShadowException("Invalid request! Please provide only ONE keyword for your find.\n");
+        }
+    }
+
+    private static void validateNonEmptyRequest(String details, String taskType) throws ShadowException {
+        if (details.isEmpty()) {
+            throw new ShadowException("Invalid request! Please provide a description for your " + taskType + ".\n");
+        }
+    }
+
+    private static void validateUniqueMarkerPresence(String details, String marker, String msg) throws ShadowException {
+        if (!details.contains(marker)) {
+            throw new ShadowException("Invalid format! " + msg);
+        }
+
+        if (details.indexOf(marker) != details.lastIndexOf(marker)) {
+            throw new ShadowException("Duplicate " + marker + "found! " + msg);
+        }
+    }
+
+    private static void validateNonEmptyDate(String[] data, int index, String type, String msg) throws ShadowException {
+        if (data.length <= index || data[index].trim().isEmpty()) {
+            throw new ShadowException("Missing " + type + " date! " + msg);
         }
     }
 
     /**
      * Returns a String representing the given task timestamp, formatted as "MMM d yyyy HH:mm".
+     * Validates that the given start and end dates form a valid chronological range.
      * This helper function converts the given timestamp using the DateTimeFormatter class.
      *
-     * @param timestamp The raw task timestamp in "d/M/yyyy HHmm" format.
+     * @param timestamps The start date of the event in "d/M/yyyy HHmm" format.
      * @return A formatted String representation of the given task timestamp.
+     * @throws ShadowException If the end date is before the start date.
      */
-    private static String formatTaskDateTime(String timestamp) {
-        assert timestamp != null : "timestamp should not be null";
+    private static String[] validateAndFormatDateRange(String... timestamps) throws ShadowException {
+        assert timestamps != null : "timestamps should not be null";
         DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
         DateTimeFormatter taskOutputFormatter = DateTimeFormatter.ofPattern(OUTPUT_DATE_PATTERN);
-        LocalDateTime taskTimestamp = LocalDateTime.parse(timestamp, taskInputFormatter);
-        return taskTimestamp.format(taskOutputFormatter);
+
+        if (timestamps.length == 1) {
+            LocalDateTime dueDate = LocalDateTime.parse(timestamps[0], taskInputFormatter);
+            return new String[] { dueDate.format(taskOutputFormatter) };
+        } else if (timestamps.length == 2) {
+            LocalDateTime startDate = LocalDateTime.parse(timestamps[0], taskInputFormatter);
+            LocalDateTime endDate = LocalDateTime.parse(timestamps[1], taskInputFormatter);
+            if (endDate.isBefore(startDate)) {
+                throw new ShadowException("Invalid event dates! Start date must be before end date!\n");
+            }
+            return new String[] { startDate.format(taskOutputFormatter), endDate.format(taskOutputFormatter) };
+        } else {
+            throw new IllegalArgumentException("validateAndFormatDateRange expects only 1 or 2 timestamps!\n");
+        }
     }
 
     /**
