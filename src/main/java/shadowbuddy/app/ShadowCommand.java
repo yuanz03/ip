@@ -88,4 +88,11 @@ public class ShadowCommand {
         this.endDate = endDate;
         this.taskIndex = NO_INDEX;
     }
+
+    /**
+     * Returns the String representation of the current command type.
+     */
+    public String convertCommandTypeToString() {
+        return this.commandType.toString();
+    }
 }

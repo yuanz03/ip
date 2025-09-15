@@ -15,8 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 /**
- * Represents a dialog box consisting of an ImageView to represent the speaker's face
- * and a label containing text from the speaker.
+ * Represents a dialog box consisting of the speaker's face and text label.
  */
 public class DialogBox extends HBox {
     @FXML
@@ -56,6 +55,31 @@ public class DialogBox extends HBox {
     }
 
     /**
+     * Applies visual styling to the dialog box based on the given command type.
+     *
+     * @param commandType The command type String used to determine the styling to apply.
+     */
+    private void changeDialogStyle(String commandType) {
+        // Solution below inspired from a ChatGPT example on how to use multiple labels in a single switch case
+        switch (commandType) {
+        case "TODO", "DEADLINE", "EVENT":
+            dialog.getStyleClass().add("add-label");
+            break;
+        case "MARK", "UNMARK":
+            dialog.getStyleClass().add("marked-label");
+            break;
+        case "DELETE":
+            dialog.getStyleClass().add("delete-label");
+            break;
+        case "UNKNOWN":
+            dialog.getStyleClass().add("error-label");
+            break;
+        default:
+            // Do nothing
+        }
+    }
+
+    /**
      * Creates a DialogBox instance that represents the user.
      *
      * @param message The content of the user response.
@@ -68,6 +92,7 @@ public class DialogBox extends HBox {
 
     /**
      * Creates a DialogBox instance that represents the chatbot.
+     * An overloaded factory method of DialogBox that takes a greeting message and chatbot image.
      *
      * @param message The content of the chatbot response.
      * @param avatar The profile image representing the chatbot.
@@ -76,6 +101,22 @@ public class DialogBox extends HBox {
     public static DialogBox getShadowDialog(String message, Image avatar) {
         var shadowDialog = new DialogBox(message, avatar);
         shadowDialog.flip();
+        return shadowDialog;
+    }
+
+    /**
+     * Creates a DialogBox instance that represents the chatbot.
+     * An overloaded factory method of DialogBox that takes a greeting message, chatbot image, and command type.
+     *
+     * @param message The content of the chatbot response.
+     * @param avatar The profile image representing the chatbot.
+     * @param commandType The type of the user command to customize the dialog style.
+     * @return A DialogBox configured for the chatbot displayed on the left.
+     */
+    public static DialogBox getShadowDialog(String message, Image avatar, String commandType) {
+        var shadowDialog = new DialogBox(message, avatar);
+        shadowDialog.flip();
+        shadowDialog.changeDialogStyle(commandType);
         return shadowDialog;
     }
 }
