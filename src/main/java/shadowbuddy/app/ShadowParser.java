@@ -148,6 +148,7 @@ public class ShadowParser {
         }
 
         try {
+            validateDateRange(eventTimings[0].trim(), eventTimings[1].trim());
             String formattedStartDate = formatTaskDateTime(eventTimings[0].trim());
             String formattedEndDate = formatTaskDateTime(eventTimings[1].trim());
             return new ShadowCommand(ShadowCommand.CommandType.EVENT, eventDetails[0].trim(),
@@ -155,6 +156,22 @@ public class ShadowParser {
         } catch (DateTimeParseException exception) {
             throw new ShadowException("Invalid start or end date! "
                     + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
+        }
+    }
+
+    /**
+     * Validates that the given start and end dates form a valid chronological range.
+     *
+     * @param startDate The start date of the event.
+     * @param endDate The end date of the event.
+     * @throws ShadowException If the end date is before the start date.
+     */
+    private static void validateDateRange(String startDate, String endDate) throws ShadowException {
+        DateTimeFormatter taskInputFormatter = DateTimeFormatter.ofPattern(INPUT_DATE_PATTERN);
+        LocalDateTime startTimestamp = LocalDateTime.parse(startDate, taskInputFormatter);
+        LocalDateTime endTimestamp = LocalDateTime.parse(endDate, taskInputFormatter);
+        if (endTimestamp.isBefore(startTimestamp)) {
+            throw new ShadowException("Invalid event dates! Start date must be before end date!\n");
         }
     }
 
