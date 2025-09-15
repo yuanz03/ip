@@ -85,11 +85,13 @@ public class ShadowController {
         case MARK:
             int markIndex = userCommand.taskIndex;
             validateTaskIndex(markIndex, this.taskList.getLength());
+            validateTaskDoneStatus(this.taskList.getTask(markIndex), userCommand.convertCommandTypeToString());
             this.taskList.markTask(markIndex);
             return ui.showMarkConfirmationMessage(this.taskList.getTask(markIndex));
         case UNMARK:
             int unmarkIndex = userCommand.taskIndex;
             validateTaskIndex(unmarkIndex, this.taskList.getLength());
+            validateTaskDoneStatus(this.taskList.getTask(unmarkIndex), userCommand.convertCommandTypeToString());
             this.taskList.unmarkTask(unmarkIndex);
             return ui.showUnmarkConfirmationMessage(this.taskList.getTask(unmarkIndex));
         case DELETE:
@@ -101,17 +103,17 @@ public class ShadowController {
             TaskList matchingTasks = this.taskList.getMatchingTasks(this.taskList, taskDescription);
             return ui.showMatchingTasks(matchingTasks);
         case TODO:
-            validateTaskDescription(taskDescription);
+            validateUniqueTaskDescription(taskDescription);
             Task todo = new Todo(taskDescription);
             this.taskList.addTask(todo);
             return ui.showTaskCreationMessage(todo, this.taskList.getLength());
         case DEADLINE:
-            validateTaskDescription(taskDescription);
+            validateUniqueTaskDescription(taskDescription);
             Task deadline = new Deadline(taskDescription, userCommand.dueDate);
             this.taskList.addTask(deadline);
             return ui.showTaskCreationMessage(deadline, this.taskList.getLength());
         case EVENT:
-            validateTaskDescription(taskDescription);
+            validateUniqueTaskDescription(taskDescription);
             Task event = new Event(taskDescription, userCommand.startDate, userCommand.endDate);
             this.taskList.addTask(event);
             return ui.showTaskCreationMessage(event, this.taskList.getLength());
@@ -143,8 +145,29 @@ public class ShadowController {
         assert taskCount >= 0 : "taskCount should not be negative";
         if (taskCount == 0) {
             throw new ShadowException("ERROR! Your task list is empty!\n");
-        } else if (taskIndex < 1 || taskIndex > taskCount) {
+        }
+
+        if (taskIndex < 1 || taskIndex > taskCount) {
             throw new ShadowException("Invalid task index! Please enter a number between 1 and " + taskCount + ".\n");
+        }
+    }
+
+    /**
+     * Validates whether the given task can be marked as done or not done.
+     * This helper function validates task done status for mark and unmark commands.
+     *
+     * @param task The task in the Tasklist to validate.
+     * @param commandType The type of the user command, either MARK or UNMARK.
+     * @throws ShadowException If the task status already matches the requested command.
+     */
+    private void validateTaskDoneStatus(Task task, String commandType) throws ShadowException {
+        boolean isTaskDone = (task.getStatusIcon().equalsIgnoreCase("X"));
+        if (isTaskDone && commandType.equalsIgnoreCase("MARK")) {
+            throw new ShadowException("ERROR! The task indicated is already marked as done!\n");
+        }
+
+        if (!isTaskDone && commandType.equalsIgnoreCase("UNMARK")) {
+            throw new ShadowException("ERROR! The task indicated is already marked as not done!\n");
         }
     }
 
@@ -155,7 +178,7 @@ public class ShadowController {
      * @param taskDescription The description of the task to validate.
      * @throws ShadowException If duplicate task descriptions are detected.
      */
-    private void validateTaskDescription(String taskDescription) throws ShadowException {
+    private void validateUniqueTaskDescription(String taskDescription) throws ShadowException {
         if (this.taskList.containsDuplicate(taskDescription)) {
             throw new ShadowException("Invalid request! A task with this description already exists!\n");
         }
