@@ -1,0 +1,50 @@
+.root {
+    main-color: linear-gradient(to bottom right, #1a0f2b, #3b0a45, #5c1c70);
+    -fx-background-color: main-color;
+    -fx-background-image: url("../images/ChatbotBackground.jpg");
+    -fx-background-size: 400px 600px;
+    -fx-background-repeat: round;
+}
+
+.text-field {
+    -fx-background-color: #7D2894;
+    -fx-font: 16px "Comic Sans MS";
+    -fx-text-fill: white
+}
+
+.button {
+    -fx-background-color: #9C22BF;
+    -fx-font: bold 16px "Comic Sans MS";
+    -fx-text-fill: white
+}
+
+.button:hover {
+    -fx-background-color: #FFBF00;
+    -fx-font-size: 18px;
+}
+
+.button:pressed {
+    -fx-background-color: #40C421;
+    -fx-font-size: 20px;
+}
+
+.scroll-pane,
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-font-size: 10px;
+    -fx-background-color: main-color;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #D420BF;
+    -fx-background-radius: 1em;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}

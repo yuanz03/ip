@@ -28,6 +28,8 @@ public class Main extends Application {
             AnchorPane root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
+            stage.setMinHeight(220);
+            stage.setMinWidth(417);
             loader.<MainWindow>getController().setShadow(shadow);
             stage.show();
         } catch (IOException e) {

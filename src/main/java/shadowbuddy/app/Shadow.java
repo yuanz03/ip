@@ -15,9 +15,12 @@ import shadowbuddy.storage.ShadowStorage;
  */
 public class Shadow {
     private static final int GOODBYE_DELAY = 1000;
+    private static final String EXIT_COMMAND = "bye";
+    private static final String ERROR_COMMAND = "UNKNOWN";
     private final ShadowUi chatbotUi;
     private final ShadowController chatbotController;
     private final ShadowStorage taskStorage;
+    private String commandType;
 
     /**
      * Initializes a Shadow instance with the given file path.
@@ -60,7 +63,8 @@ public class Shadow {
     public String getResponse(String userInput) {
         // Solution below adapted from a ChatGPT example on how to delay exiting from a JavaFx application
         // Initial thread-based approach was replaced to ensure thread safety as per code quality standards
-        if (userInput.equalsIgnoreCase("bye")) {
+        if (userInput.equalsIgnoreCase(EXIT_COMMAND)) {
+            commandType = userInput; // reset to default dialog styling when exit command is passed
             PauseTransition exitDelay = new PauseTransition(Duration.millis(GOODBYE_DELAY));
             exitDelay.setOnFinished(event -> Platform.exit());
             exitDelay.play();
@@ -69,12 +73,18 @@ public class Shadow {
 
         try {
             ShadowCommand userCommand = chatbotController.handleInput(userInput);
+            commandType = userCommand.convertCommandTypeToString(); // store command type for appropriate dialog styling
             String chatbotOutput = chatbotController.executeCommand(userCommand, chatbotUi);
             chatbotController.writeToDatabase();
             return chatbotOutput;
         } catch (ShadowException | IOException exception) {
+            commandType = ERROR_COMMAND; // set to error dialog styling when exceptions are thrown
             return exception.getMessage();
         }
+    }
+
+    public String getCommandType() {
+        return this.commandType;
     }
 
     /**

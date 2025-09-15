@@ -1,0 +1,41 @@
+.label {
+    -fx-background-color: linear-gradient(to bottom right, #8E2DE2, #4A00E0);
+    -fx-border-color: #984DFF;
+    -fx-font: 16px "Comic Sans MS";
+    -fx-text-fill: white;
+    -fx-border-width: 2px;
+    -fx-background-radius: 1em 1em 0 1em;
+    -fx-border-radius: 1em 1em 0 1em;
+    -fx-padding: 6px;
+    -fx-border-insets: 0px 7px 0px 7px;
+    -fx-background-insets: 0px 7px 0px 7px;
+}
+
+.reply-label {
+    -fx-background-radius: 1em 1em 1em 0;
+    -fx-border-radius: 1em 1em 1em 0;
+}
+
+.add-label {
+    -fx-background-color: gold;
+    -fx-text-fill: black;
+}
+
+.marked-label {
+    -fx-background-color: green;
+}
+
+.delete-label {
+    -fx-background-color: black;
+}
+
+.error-label {
+    -fx-background-color: red;
+}
+
+#displayPicture {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 5, 5);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-rotate: 0;
+}
