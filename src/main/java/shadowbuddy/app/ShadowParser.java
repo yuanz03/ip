@@ -76,14 +76,20 @@ public class ShadowParser {
      *
      * @param requestDetails The trailing input after the deadline keyword.
      * @return A ShadowCommand instance representing the Deadline details.
-     * @throws ShadowException If "/by", description, or due date is missing, or the date format is invalid.
+     * @throws ShadowException If the requestDetails is syntactically invalid.
      */
     private static ShadowCommand parseDeadline(String requestDetails) throws ShadowException {
         assert requestDetails != null : "deadline requestDetails should not be null";
         if (requestDetails.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your deadline.\n");
-        } else if (!requestDetails.contains("/by")) {
+        }
+
+        if (!requestDetails.contains("/by")) {
             throw new ShadowException("Invalid format! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
+        }
+
+        if (requestDetails.indexOf("/by") != requestDetails.lastIndexOf("/by")) {
+            throw new ShadowException("Duplicate '/by' found! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n");
         }
 
         String[] deadlineDetails = requestDetails.split("/by");
@@ -106,14 +112,26 @@ public class ShadowParser {
      *
      * @param requestDetails The trailing input after the event keyword.
      * @return A ShadowCommand instance representing the Event details.
-     * @throws ShadowException If "/from", "/to", description, or dates are missing, or the date format is invalid.
+     * @throws ShadowException If the requestDetails is syntactically invalid.
      */
     private static ShadowCommand parseEvent(String requestDetails) throws ShadowException {
         assert requestDetails != null : "event requestDetails should not be null";
         if (requestDetails.isEmpty()) {
             throw new ShadowException("Invalid request! Please provide a description for your event.\n");
-        } else if (!requestDetails.contains("/from") || !requestDetails.contains("/to")) {
+        }
+
+        if (!requestDetails.contains("/from") || !requestDetails.contains("/to")) {
             throw new ShadowException("Invalid format! "
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
+        }
+
+        if (requestDetails.indexOf("/from") != requestDetails.lastIndexOf("/from")) {
+            throw new ShadowException("Duplicate '/from' found! "
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
+        }
+
+        if (requestDetails.indexOf("/to") != requestDetails.lastIndexOf("/to")) {
+            throw new ShadowException("Duplicate '/to' found! "
                     + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
         }
 
@@ -122,7 +140,9 @@ public class ShadowParser {
         if (eventTimings[0].trim().isEmpty()) {
             throw new ShadowException("Missing start date! "
                     + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
-        } else if (eventTimings.length < 2 || eventTimings[1].trim().isEmpty()) {
+        }
+
+        if (eventTimings.length < 2 || eventTimings[1].trim().isEmpty()) {
             throw new ShadowException("Missing end date! "
                     + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n");
         }
