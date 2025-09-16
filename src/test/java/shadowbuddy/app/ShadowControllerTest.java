@@ -15,6 +15,7 @@ public class ShadowControllerTest {
     private static final ShadowCommand MARK_COMMAND = new ShadowCommand(ShadowCommand.CommandType.MARK, 1);
     private static final ShadowCommand UNMARK_COMMAND = new ShadowCommand(ShadowCommand.CommandType.UNMARK, 1);
     private static final ShadowCommand DELETE_COMMAND = new ShadowCommand(ShadowCommand.CommandType.DELETE, 1);
+    private static final ShadowCommand FIND_COMMAND = new ShadowCommand(ShadowCommand.CommandType.FIND, "book");
     private static final ShadowCommand TODO_COMMAND = new ShadowCommand(ShadowCommand.CommandType.TODO,
             "borrow book");
     private static final ShadowCommand DEADLINE_COMMAND = new ShadowCommand(ShadowCommand.CommandType.DEADLINE,
@@ -97,6 +98,24 @@ public class ShadowControllerTest {
     }
 
     @Test
+    public void execute_findKeyword(@TempDir Path tempDir) throws ShadowException {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
+        ShadowUi dummyUi = new ShadowUi();
+
+        dummyController.executeCommand(TODO_COMMAND, dummyUi);
+        dummyController.executeCommand(DEADLINE_COMMAND, dummyUi);
+        dummyController.executeCommand(EVENT_COMMAND, dummyUi);
+
+        String actualOutput = dummyController.executeCommand(FIND_COMMAND, dummyUi);
+        String expectedOutput = "Here are the matching tasks in your list:\n"
+                + "1. [T][ ] borrow book\n"
+                + "2. [D][ ] return book (by: Dec 2 2025 18:00)\n";
+        assertEquals(expectedOutput, actualOutput);
+    }
+
+    @Test
     public void execute_emptyTaskList_exceptionThrown(@TempDir Path tempDir) {
         Path tempFile = tempDir.resolve("dummy.txt");
         ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
@@ -161,6 +180,59 @@ public class ShadowControllerTest {
         } catch (ShadowException exception) {
             assertEquals("Invalid task index! Please enter a number between 1 and "
                     + dummyController.getTaskList().getLength() + ".\n", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void execute_duplicateTaskDescription_exceptionThrown(@TempDir Path tempDir) {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
+        ShadowUi dummyUi = new ShadowUi();
+
+        ShadowCommand duplicateDeadlineCommand = new ShadowCommand(ShadowCommand.CommandType.DEADLINE,
+                "borrow book", "Dec 2 2025 18:00");
+
+        try {
+            dummyController.executeCommand(TODO_COMMAND, dummyUi);
+            dummyController.executeCommand(TODO_COMMAND, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid request! A task with this description already exists!\n",
+                    exception.getMessage());
+        }
+
+        try {
+            dummyController.executeCommand(duplicateDeadlineCommand, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid request! A task with this description already exists!\n",
+                    exception.getMessage());
+        }
+    }
+
+    @Test
+    public void execute_invalidTaskDoneStatus_exceptionThrown(@TempDir Path tempDir) {
+        Path tempFile = tempDir.resolve("dummy.txt");
+        ShadowStorage dummyStorage = new ShadowStorage(tempFile.toString());
+        ShadowController dummyController = new ShadowController(dummyStorage);
+        ShadowUi dummyUi = new ShadowUi();
+
+        try {
+            dummyController.executeCommand(TODO_COMMAND, dummyUi);
+            dummyController.executeCommand(MARK_COMMAND, dummyUi);
+            dummyController.executeCommand(MARK_COMMAND, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("ERROR! The task indicated is already marked as done!\n", exception.getMessage());
+        }
+
+        try {
+            dummyController.executeCommand(UNMARK_COMMAND, dummyUi);
+            dummyController.executeCommand(UNMARK_COMMAND, dummyUi);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("ERROR! The task indicated is already marked as not done!\n", exception.getMessage());
         }
     }
 
