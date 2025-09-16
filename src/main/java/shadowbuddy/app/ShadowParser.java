@@ -164,7 +164,7 @@ public class ShadowParser {
         }
 
         if (details.indexOf(marker) != details.lastIndexOf(marker)) {
-            throw new ShadowException("Duplicate " + marker + "found! " + msg);
+            throw new ShadowException("Duplicate '" + marker + "' found! " + msg);
         }
     }
 

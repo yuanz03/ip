@@ -36,6 +36,60 @@ public class ShadowParserTest {
     }
 
     @Test
+    public void parse_invalidTaskIndex_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.MARK, ShadowParser.parse("mark book").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid task index! Please provide a numeric index for your request!\n",
+                    exception.getMessage());
+        }
+
+        try {
+            assertEquals(ShadowCommand.CommandType.UNMARK, ShadowParser.parse("unmark book").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid task index! Please provide a numeric index for your request!\n",
+                    exception.getMessage());
+        }
+
+        try {
+            assertEquals(ShadowCommand.CommandType.DELETE, ShadowParser.parse("delete book").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid task index! Please provide a numeric index for your request!\n",
+                    exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_validFindCommand() throws ShadowException {
+        ShadowCommand userCommand = ShadowParser.parse("find book");
+        assertEquals(ShadowCommand.CommandType.FIND, userCommand.commandType);
+        assertEquals("book", userCommand.taskDescription);
+    }
+
+    @Test
+    public void parse_emptyFind_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.FIND, ShadowParser.parse("find").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid request! Please provide a keyword for your find.\n", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_findMultipleKeywords_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.FIND, ShadowParser.parse("find return book").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid request! Please provide only ONE keyword for your find.\n", exception.getMessage());
+        }
+    }
+
+    @Test
     public void parse_validTodoCommand() throws ShadowException {
         ShadowCommand userCommand = ShadowParser.parse("todo return book");
         assertEquals(ShadowCommand.CommandType.TODO, userCommand.commandType);
@@ -48,8 +102,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.TODO, ShadowParser.parse("todo").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! Please provide a description for your todo.\n",
-                    exception.getMessage());
+            assertEquals("Invalid request! Please provide a description for your todo.\n", exception.getMessage());
         }
     }
 
@@ -67,8 +120,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.DEADLINE, ShadowParser.parse("deadline").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! Please provide a description for your deadline.\n",
-                    exception.getMessage());
+            assertEquals("Invalid request! Please provide a description for your deadline.\n", exception.getMessage());
         }
     }
 
@@ -80,6 +132,18 @@ public class ShadowParserTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid format! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n",
+                    exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_duplicateDeadlineMarkers_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.DEADLINE,
+                    ShadowParser.parse("deadline buy book /by 2/12/2025 /by 1800").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Duplicate '/by' found! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n",
                     exception.getMessage());
         }
     }
@@ -141,6 +205,27 @@ public class ShadowParserTest {
     }
 
     @Test
+    public void parse_duplicateEventMarkers_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.EVENT,
+                    ShadowParser.parse("event meeting /from 4/7/2025 /from 1600 /to 5/7/2025 2100").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Duplicate '/from' found! "
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+        }
+
+        try {
+            assertEquals(ShadowCommand.CommandType.EVENT,
+                    ShadowParser.parse("event meeting /from 4/7/2025 1600 /to 5/7/2025 /to 2100").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Duplicate '/to' found! "
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+        }
+    }
+
+    @Test
     public void parse_missingEventStartDate_exceptionThrown() {
         try {
             assertEquals(ShadowCommand.CommandType.EVENT,
@@ -165,6 +250,17 @@ public class ShadowParserTest {
     }
 
     @Test
+    public void parse_invalidChronologicalOrder_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.EVENT,
+                    ShadowParser.parse("event meeting /from 4/7/2025 2100 /to 4/7/2025 1600").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Invalid event dates! Start date must be before end date!\n", exception.getMessage());
+        }
+    }
+
+    @Test
     public void parse_invalidEventDates_exceptionThrown() {
         try {
             assertEquals(ShadowCommand.CommandType.EVENT,
@@ -173,6 +269,17 @@ public class ShadowParserTest {
         } catch (ShadowException exception) {
             assertEquals("Invalid start or end date! "
                     + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void parse_emptyCommand_exceptionThrown() {
+        try {
+            assertEquals(ShadowCommand.CommandType.UNKNOWN, ShadowParser.parse(" ").commandType);
+            fail();
+        } catch (ShadowException exception) {
+            assertEquals("Empty request! Try one of these commands: list, mark, unmark, todo, "
+                    + "delete, event, or deadline, and I'll handle it for you.\n", exception.getMessage());
         }
     }
 
