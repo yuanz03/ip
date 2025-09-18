@@ -126,21 +126,21 @@ public class ShadowControllerTest {
             dummyController.executeCommand(MARK_COMMAND, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("ERROR! Your task list is empty!\n", exception.getMessage());
+            assertEquals("Invalid request! Your task list is empty!", exception.getMessage());
         }
 
         try {
             dummyController.executeCommand(UNMARK_COMMAND, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("ERROR! Your task list is empty!\n", exception.getMessage());
+            assertEquals("Invalid request! Your task list is empty!", exception.getMessage());
         }
 
         try {
             dummyController.executeCommand(DELETE_COMMAND, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("ERROR! Your task list is empty!\n", exception.getMessage());
+            assertEquals("Invalid request! Your task list is empty!", exception.getMessage());
         }
     }
 
@@ -160,8 +160,8 @@ public class ShadowControllerTest {
             dummyController.executeCommand(invalidMarkCommand, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid task index! Please enter a number between 1 and "
-                    + dummyController.getTaskList().getLength() + ".\n", exception.getMessage());
+            assertEquals("Invalid request! Please enter a number between 1 and "
+                    + dummyController.getTaskList().getLength() + ".", exception.getMessage());
         }
 
         try {
@@ -169,8 +169,8 @@ public class ShadowControllerTest {
             dummyController.executeCommand(invalidUnmarkCommand, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid task index! Please enter a number between 1 and "
-                    + dummyController.getTaskList().getLength() + ".\n", exception.getMessage());
+            assertEquals("Invalid request! Please enter a number between 1 and "
+                    + dummyController.getTaskList().getLength() + ".", exception.getMessage());
         }
 
         try {
@@ -178,8 +178,8 @@ public class ShadowControllerTest {
             dummyController.executeCommand(invalidDeleteCommand, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid task index! Please enter a number between 1 and "
-                    + dummyController.getTaskList().getLength() + ".\n", exception.getMessage());
+            assertEquals("Invalid request! Please enter a number between 1 and "
+                    + dummyController.getTaskList().getLength() + ".", exception.getMessage());
         }
     }
 
@@ -198,7 +198,7 @@ public class ShadowControllerTest {
             dummyController.executeCommand(TODO_COMMAND, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! A task with this description already exists!\n",
+            assertEquals("Invalid request! A task with this description already exists!",
                     exception.getMessage());
         }
 
@@ -206,7 +206,7 @@ public class ShadowControllerTest {
             dummyController.executeCommand(duplicateDeadlineCommand, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! A task with this description already exists!\n",
+            assertEquals("Invalid request! A task with this description already exists!",
                     exception.getMessage());
         }
     }
@@ -224,7 +224,7 @@ public class ShadowControllerTest {
             dummyController.executeCommand(MARK_COMMAND, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("ERROR! The task indicated is already marked as done!\n", exception.getMessage());
+            assertEquals("Invalid request! The task indicated is already marked as done!", exception.getMessage());
         }
 
         try {
@@ -232,7 +232,7 @@ public class ShadowControllerTest {
             dummyController.executeCommand(UNMARK_COMMAND, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("ERROR! The task indicated is already marked as not done!\n", exception.getMessage());
+            assertEquals("Invalid request! The task indicated is already marked as not done!", exception.getMessage());
         }
     }
 
@@ -247,8 +247,8 @@ public class ShadowControllerTest {
             dummyController.executeCommand(UNKNOWN_COMMAND, dummyUi);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Unknown request! Try one of these commands: list, mark, unmark, todo, "
-                    + "delete, event, or deadline, and I'll handle it for you.\n", exception.getMessage());
+            assertEquals("Invalid request! Try one of these commands: list, mark, unmark, todo, "
+                    + "delete, event, or deadline, and I'll handle it for you.", exception.getMessage());
         }
     }
 }

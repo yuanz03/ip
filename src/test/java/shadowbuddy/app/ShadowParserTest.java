@@ -41,7 +41,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.MARK, ShadowParser.parse("mark book").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid task index! Please provide a numeric index for your request!\n",
+            assertEquals("Invalid request! Please provide a numeric index for your request!",
                     exception.getMessage());
         }
 
@@ -49,7 +49,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.UNMARK, ShadowParser.parse("unmark book").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid task index! Please provide a numeric index for your request!\n",
+            assertEquals("Invalid request! Please provide a numeric index for your request!",
                     exception.getMessage());
         }
 
@@ -57,7 +57,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.DELETE, ShadowParser.parse("delete book").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid task index! Please provide a numeric index for your request!\n",
+            assertEquals("Invalid request! Please provide a numeric index for your request!",
                     exception.getMessage());
         }
     }
@@ -75,7 +75,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.FIND, ShadowParser.parse("find").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! Please provide a keyword for your find.\n", exception.getMessage());
+            assertEquals("Invalid request! Please provide a keyword for your find.", exception.getMessage());
         }
     }
 
@@ -85,7 +85,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.FIND, ShadowParser.parse("find return book").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! Please provide only ONE keyword for your find.\n", exception.getMessage());
+            assertEquals("Invalid request! Please provide only ONE keyword for your find.", exception.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.TODO, ShadowParser.parse("todo").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! Please provide a description for your todo.\n", exception.getMessage());
+            assertEquals("Invalid request! Please provide a description for your todo.", exception.getMessage());
         }
     }
 
@@ -120,7 +120,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.DEADLINE, ShadowParser.parse("deadline").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! Please provide a description for your deadline.\n", exception.getMessage());
+            assertEquals("Invalid request! Please provide a description for your deadline.", exception.getMessage());
         }
     }
 
@@ -131,7 +131,7 @@ public class ShadowParserTest {
                     ShadowParser.parse("deadline buy book by 2/12/2025 1800").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid format! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n",
+            assertEquals("Invalid format! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.",
                     exception.getMessage());
         }
     }
@@ -143,7 +143,7 @@ public class ShadowParserTest {
                     ShadowParser.parse("deadline buy book /by 2/12/2025 /by 1800").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Duplicate '/by' found! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n",
+            assertEquals("Duplicate '/by' found! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.",
                     exception.getMessage());
         }
     }
@@ -155,7 +155,7 @@ public class ShadowParserTest {
                     ShadowParser.parse("deadline buy book /by").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Missing due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n",
+            assertEquals("Missing due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.",
                     exception.getMessage());
         }
     }
@@ -167,7 +167,7 @@ public class ShadowParserTest {
                     ShadowParser.parse("deadline buy book /by 2/12/2025 6pm").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n",
+            assertEquals("Invalid due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.",
                     exception.getMessage());
         }
     }
@@ -187,7 +187,7 @@ public class ShadowParserTest {
             assertEquals(ShadowCommand.CommandType.EVENT, ShadowParser.parse("event").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid request! Please provide a description for your event.\n",
+            assertEquals("Invalid request! Please provide a description for your event.",
                     exception.getMessage());
         }
     }
@@ -200,7 +200,7 @@ public class ShadowParserTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid format! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.", exception.getMessage());
         }
     }
 
@@ -212,7 +212,7 @@ public class ShadowParserTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Duplicate '/from' found! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.", exception.getMessage());
         }
 
         try {
@@ -221,7 +221,7 @@ public class ShadowParserTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Duplicate '/to' found! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.", exception.getMessage());
         }
     }
 
@@ -233,7 +233,7 @@ public class ShadowParserTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Missing start date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.", exception.getMessage());
         }
     }
 
@@ -245,7 +245,7 @@ public class ShadowParserTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Missing end date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.", exception.getMessage());
         }
     }
 
@@ -256,7 +256,7 @@ public class ShadowParserTest {
                     ShadowParser.parse("event meeting /from 4/7/2025 2100 /to 4/7/2025 1600").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Invalid event dates! Start date must be before end date!\n", exception.getMessage());
+            assertEquals("Invalid request! Start date must be before end date!", exception.getMessage());
         }
     }
 
@@ -268,7 +268,7 @@ public class ShadowParserTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Invalid start or end date! "
-                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n", exception.getMessage());
+                    + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.", exception.getMessage());
         }
     }
 
@@ -279,7 +279,7 @@ public class ShadowParserTest {
             fail();
         } catch (ShadowException exception) {
             assertEquals("Empty request! Try one of these commands: list, mark, unmark, todo, "
-                    + "delete, event, or deadline, and I'll handle it for you.\n", exception.getMessage());
+                    + "delete, event, or deadline, and I'll handle it for you.", exception.getMessage());
         }
     }
 
