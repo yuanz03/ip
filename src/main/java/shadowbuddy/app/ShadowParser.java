@@ -22,13 +22,12 @@ public class ShadowParser {
      * The user input is analyzed to identify the command type, before returning the corresponding
      * ShadowCommand instance. Parsing of deadline and event commands is delegated to specialized parsers.
      *
-     * @param input The raw user input String to parse.
+     * @param userInput The raw user input String to parse.
      * @return A ShadowCommand instance representing the parsed input.
      * @throws ShadowException If the user input is syntactically invalid.
      */
-    public static ShadowCommand parse(String input) throws ShadowException {
-        assert input != null : "user input should not be null";
-        String userInput = input.trim();
+    public static ShadowCommand parse(String userInput) throws ShadowException {
+        assert userInput != null : "user input should not be null";
         if (userInput.isEmpty()) {
             throw new ShadowException(Messages.PREFIX_EMPTY_COMMAND + Messages.MESSAGE_COMMANDS_GUIDE);
         }

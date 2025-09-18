@@ -46,7 +46,7 @@ public class Shadow {
             String databaseOutput = prepareDatabaseOutput();
             return greeting + "\n" + databaseOutput;
         } catch (IOException exception) {
-            return "Oops! Something went wrong when starting the chatbot session: " + exception.getMessage();
+            return exception.getMessage();
         }
     }
 
@@ -61,10 +61,13 @@ public class Shadow {
      * @return The chatbot's textual response, generated from executing the user's command.
      */
     public String getResponse(String userInput) {
+        String trimmedInput = userInput.trim();
+        String[] inputDetails = trimmedInput.split(" ");
+
         // Solution below adapted from a ChatGPT example on how to delay exiting from a JavaFx application
         // Initial thread-based approach was replaced to ensure thread safety as per code quality standards
-        if (userInput.equalsIgnoreCase(EXIT_COMMAND)) {
-            commandType = userInput; // reset to default dialog styling when exit command is passed
+        if (inputDetails[0].equalsIgnoreCase(EXIT_COMMAND)) {
+            commandType = EXIT_COMMAND; // reset to default dialog styling when exit command is passed
             PauseTransition exitDelay = new PauseTransition(Duration.millis(GOODBYE_DELAY));
             exitDelay.setOnFinished(event -> Platform.exit());
             exitDelay.play();
@@ -72,7 +75,7 @@ public class Shadow {
         }
 
         try {
-            ShadowCommand userCommand = chatbotController.handleInput(userInput);
+            ShadowCommand userCommand = chatbotController.handleInput(trimmedInput);
             commandType = userCommand.convertCommandTypeToString(); // store command type for appropriate dialog styling
             String chatbotOutput = chatbotController.executeCommand(userCommand, chatbotUi);
             chatbotController.writeToDatabase();
