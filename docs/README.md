@@ -82,7 +82,7 @@ Mark your desired task as completed.
 **Output Examples**: presence of `'X'` indicates the tasks has been completed
 - `"[T][X] borrow book"`
 
-### Unmarking Tasks ↩️: `list`
+### Unmarking Tasks ↩️: `unmark`
 Mark your desired task as not completed yet.
 
 **Syntax Format**: `unmark INDEX`
@@ -93,7 +93,7 @@ Mark your desired task as not completed yet.
 **Output Examples**: absence of `'X'` indicates the tasks has not been completed yet
 - `"[T][ ] borrow book"`
 
-### Deleting Tasks 🗑: `list`
+### Deleting Tasks 🗑: `delete`
 Deletes your selected task from the Shadow task list.
 
 **Syntax Format**: `delete INDEX`
