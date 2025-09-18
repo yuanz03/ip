@@ -76,7 +76,6 @@ public class ShadowStorage {
             taskIndex++;
         }
         fileScanner.close();
-        sb.append("\n");
         return sb.toString();
     }
 
