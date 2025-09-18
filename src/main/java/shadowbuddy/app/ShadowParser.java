@@ -16,6 +16,9 @@ public class ShadowParser {
     // Statement below adapted from a ChatGPT example on how to define a strict date format for user input
     private static final String INPUT_DATE_PATTERN = "d/M/yyyy HHmm";
     private static final String OUTPUT_DATE_PATTERN = "MMM d yyyy HH:mm";
+    private static final String DEADLINE_MARKER = "/by";
+    private static final String EVENT_START_MARKER = "/from";
+    private static final String EVENT_END_MARKER = "/to";
 
     /**
      * Parses raw user input String into a ShadowCommand instance.
@@ -75,9 +78,9 @@ public class ShadowParser {
     private static ShadowCommand parseDeadline(String requestDetails) throws ShadowException {
         assert requestDetails != null : "deadline requestDetails should not be null";
         validateNonEmptyRequest(requestDetails, "deadline");
-        validateUniqueMarkerPresence(requestDetails, "/by", Messages.MESSAGE_DEADLINE_FORMAT);
+        validateUniqueMarkerPresence(requestDetails, DEADLINE_MARKER, Messages.MESSAGE_DEADLINE_FORMAT);
 
-        String[] deadlineDetails = requestDetails.split("/by");
+        String[] deadlineDetails = requestDetails.split(DEADLINE_MARKER);
         validateNonEmptyDate(deadlineDetails, 1, "due", Messages.MESSAGE_DEADLINE_FORMAT);
 
         try {
@@ -100,11 +103,11 @@ public class ShadowParser {
     private static ShadowCommand parseEvent(String requestDetails) throws ShadowException {
         assert requestDetails != null : "event requestDetails should not be null";
         validateNonEmptyRequest(requestDetails, "event");
-        validateUniqueMarkerPresence(requestDetails, "/from", Messages.MESSAGE_EVENT_FORMAT);
-        validateUniqueMarkerPresence(requestDetails, "/to", Messages.MESSAGE_EVENT_FORMAT);
+        validateUniqueMarkerPresence(requestDetails, EVENT_START_MARKER, Messages.MESSAGE_EVENT_FORMAT);
+        validateUniqueMarkerPresence(requestDetails, EVENT_END_MARKER, Messages.MESSAGE_EVENT_FORMAT);
 
-        String[] eventDetails = requestDetails.split("/from");
-        String[] eventTimings = eventDetails[1].split("/to");
+        String[] eventDetails = requestDetails.split(EVENT_START_MARKER);
+        String[] eventTimings = eventDetails[1].split(EVENT_END_MARKER);
         validateNonEmptyDate(eventTimings, 0, "start", Messages.MESSAGE_EVENT_FORMAT);
         validateNonEmptyDate(eventTimings, 1, "end", Messages.MESSAGE_EVENT_FORMAT);
 
