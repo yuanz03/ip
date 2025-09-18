@@ -275,7 +275,7 @@ public class ShadowParserTest {
     @Test
     public void parse_emptyCommand_exceptionThrown() {
         try {
-            assertEquals(ShadowCommand.CommandType.UNKNOWN, ShadowParser.parse(" ").commandType);
+            assertEquals(ShadowCommand.CommandType.UNKNOWN, ShadowParser.parse("").commandType);
             fail();
         } catch (ShadowException exception) {
             assertEquals("Empty request! Try one of these commands: list, mark, unmark, todo, "
