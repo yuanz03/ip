@@ -114,7 +114,7 @@ public class TaskList {
         assert description != null : "description should not be null";
         assert keyword != null : "keyword should not be null";
         String[] descriptionDetails = description.split(" ");
-        //noinspection ForLoopReplaceableByForEach
+
         for (int i = 0; i < descriptionDetails.length; i++) {
             if (descriptionDetails[i].equalsIgnoreCase(keyword)) {
                 return true;
