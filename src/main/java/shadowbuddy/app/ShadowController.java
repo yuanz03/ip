@@ -73,7 +73,7 @@ public class ShadowController {
      * @param userCommand The parsed ShadowCommand instance to execute.
      * @param ui The ShadowUi instance used to display confirmation messages and TaskList output.
      * @return A String representing the UI confirmation message.
-     * @throws ShadowException If the command type is unknown or the task index is invalid.
+     * @throws ShadowException If the command type is unknown, invalid index, invalid status, or duplicate descriptions.
      */
     public String executeCommand(ShadowCommand userCommand, ShadowUi ui) throws ShadowException {
         assert userCommand != null : "userCommand should not be null";

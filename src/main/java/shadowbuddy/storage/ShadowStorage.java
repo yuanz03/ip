@@ -26,6 +26,8 @@ public class ShadowStorage {
      * Initializes a ShadowStorage instance with the given file path.
      * Creates a ShadowStorage instance that initializes a File instance with the
      * specified file path and uses it to store, write, and retrieve tasks.
+     *
+     * @param filePath The file path to the task list database file.
      */
     public ShadowStorage(String filePath) {
         assert filePath != null : "filePath should not be null";
@@ -61,7 +63,6 @@ public class ShadowStorage {
      * Returns the tasks stored in the database file to the screen.
      * A Scanner is used to read each line from the database file.
      * Each input line becomes a numbered entry in the returned String.
-     * A trailing blank line is added after the file contents.
      *
      * @return A String containing the entire task list read from the database file.
      * @throws FileNotFoundException If the database file cannot be found or read.
