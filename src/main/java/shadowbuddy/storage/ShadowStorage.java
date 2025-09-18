@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import shadowbuddy.services.Messages;
 import shadowbuddy.taskmodels.Deadline;
 import shadowbuddy.taskmodels.Event;
 import shadowbuddy.taskmodels.Task;
@@ -154,7 +155,7 @@ public class ShadowStorage {
             currentTask = new Event(taskDescription, eventTimings[0], eventTimings[1]);
             break;
         default:
-            throw new IllegalArgumentException("Unknown task type: " + taskType);
+            throw new IllegalArgumentException(String.format(Messages.MESSAGE_UNKNOWN_TASK_TYPE, taskType));
         }
 
         if (isTaskDone) {
@@ -184,7 +185,7 @@ public class ShadowStorage {
             return "E | " + taskStatus + " | " + event.getDescription() + " | " + event.getStartDate()
                     + "-" + event.getEndDate();
         } else {
-            throw new IllegalArgumentException("Unknown task: " + task);
+            throw new IllegalArgumentException(String.format(Messages.MESSAGE_UNKNOWN_TASK, task));
         }
     }
 }

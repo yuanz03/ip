@@ -3,6 +3,7 @@ package shadowbuddy.app;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import shadowbuddy.services.Messages;
 import shadowbuddy.services.ShadowException;
 import shadowbuddy.storage.ShadowStorage;
 import shadowbuddy.taskmodels.Deadline;
@@ -120,8 +121,7 @@ public class ShadowController {
         case UNKNOWN:
             // Fallthrough
         default:
-            throw new ShadowException("Unknown request! Try one of these commands: list, mark, unmark, todo, "
-                    + "delete, event, or deadline, and I'll handle it for you.\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_COMMANDS_GUIDE);
         }
     }
 
@@ -144,11 +144,12 @@ public class ShadowController {
     private void validateTaskIndex(int taskIndex, int taskCount) throws ShadowException {
         assert taskCount >= 0 : "taskCount should not be negative";
         if (taskCount == 0) {
-            throw new ShadowException("ERROR! Your task list is empty!\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_EMPTY_TASK_LIST);
         }
 
         if (taskIndex < 1 || taskIndex > taskCount) {
-            throw new ShadowException("Invalid task index! Please enter a number between 1 and " + taskCount + ".\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND
+                    + String.format(Messages.MESSAGE_INVALID_TASK_INDEX_BOUNDS, taskCount));
         }
     }
 
@@ -163,11 +164,11 @@ public class ShadowController {
     private void validateTaskDoneStatus(Task task, String commandType) throws ShadowException {
         boolean isTaskDone = (task.getStatusIcon().equalsIgnoreCase("X"));
         if (isTaskDone && commandType.equalsIgnoreCase("MARK")) {
-            throw new ShadowException("ERROR! The task indicated is already marked as done!\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_ALREADY_MARKED_DONE);
         }
 
         if (!isTaskDone && commandType.equalsIgnoreCase("UNMARK")) {
-            throw new ShadowException("ERROR! The task indicated is already marked as not done!\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_ALREADY_MARKED_NOT_DONE);
         }
     }
 
@@ -180,7 +181,7 @@ public class ShadowController {
      */
     private void validateUniqueTaskDescription(String taskDescription) throws ShadowException {
         if (this.taskList.containsDuplicate(taskDescription)) {
-            throw new ShadowException("Invalid request! A task with this description already exists!\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_DUPLICATE_TASK_DESCRIPTION);
         }
     }
 }

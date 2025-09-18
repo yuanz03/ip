@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+import shadowbuddy.services.Messages;
 import shadowbuddy.services.ShadowException;
 
 /**
@@ -15,8 +16,6 @@ public class ShadowParser {
     // Statement below adapted from a ChatGPT example on how to define a strict date format for user input
     private static final String INPUT_DATE_PATTERN = "d/M/yyyy HHmm";
     private static final String OUTPUT_DATE_PATTERN = "MMM d yyyy HH:mm";
-    private static final String DEADLINE_FORMAT = "Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.\n";
-    private static final String EVENT_FORMAT = "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.\n";
 
     /**
      * Parses raw user input String into a ShadowCommand instance.
@@ -31,8 +30,7 @@ public class ShadowParser {
         assert input != null : "user input should not be null";
         String userInput = input.trim();
         if (userInput.isEmpty()) {
-            throw new ShadowException("Empty request! Try one of these commands: list, mark, unmark, todo, "
-                    + "delete, event, or deadline, and I'll handle it for you.\n");
+            throw new ShadowException(Messages.PREFIX_EMPTY_COMMAND + Messages.MESSAGE_COMMANDS_GUIDE);
         }
 
         String[] inputDetails = userInput.split(" ");
@@ -78,16 +76,16 @@ public class ShadowParser {
     private static ShadowCommand parseDeadline(String requestDetails) throws ShadowException {
         assert requestDetails != null : "deadline requestDetails should not be null";
         validateNonEmptyRequest(requestDetails, "deadline");
-        validateUniqueMarkerPresence(requestDetails, "/by", DEADLINE_FORMAT);
+        validateUniqueMarkerPresence(requestDetails, "/by", Messages.MESSAGE_DEADLINE_FORMAT);
 
         String[] deadlineDetails = requestDetails.split("/by");
-        validateNonEmptyDate(deadlineDetails, 1, "due", DEADLINE_FORMAT);
+        validateNonEmptyDate(deadlineDetails, 1, "due", Messages.MESSAGE_DEADLINE_FORMAT);
 
         try {
             String formattedDueDate = validateAndFormatDateRange(deadlineDetails[1].trim())[0];
             return new ShadowCommand(ShadowCommand.CommandType.DEADLINE, deadlineDetails[0].trim(), formattedDueDate);
         } catch (DateTimeParseException exception) {
-            throw new ShadowException("Invalid due date! " + DEADLINE_FORMAT);
+            throw new ShadowException(Messages.MESSAGE_INVALID_DEADLINE_DATE + Messages.MESSAGE_DEADLINE_FORMAT);
         }
     }
 
@@ -103,20 +101,20 @@ public class ShadowParser {
     private static ShadowCommand parseEvent(String requestDetails) throws ShadowException {
         assert requestDetails != null : "event requestDetails should not be null";
         validateNonEmptyRequest(requestDetails, "event");
-        validateUniqueMarkerPresence(requestDetails, "/from", EVENT_FORMAT);
-        validateUniqueMarkerPresence(requestDetails, "/to", EVENT_FORMAT);
+        validateUniqueMarkerPresence(requestDetails, "/from", Messages.MESSAGE_EVENT_FORMAT);
+        validateUniqueMarkerPresence(requestDetails, "/to", Messages.MESSAGE_EVENT_FORMAT);
 
         String[] eventDetails = requestDetails.split("/from");
         String[] eventTimings = eventDetails[1].split("/to");
-        validateNonEmptyDate(eventTimings, 0, "start", EVENT_FORMAT);
-        validateNonEmptyDate(eventTimings, 1, "end", EVENT_FORMAT);
+        validateNonEmptyDate(eventTimings, 0, "start", Messages.MESSAGE_EVENT_FORMAT);
+        validateNonEmptyDate(eventTimings, 1, "end", Messages.MESSAGE_EVENT_FORMAT);
 
         try {
             String[] formattedDates = validateAndFormatDateRange(eventTimings[0].trim(), eventTimings[1].trim());
             return new ShadowCommand(ShadowCommand.CommandType.EVENT, eventDetails[0].trim(), formattedDates[0],
                     formattedDates[1]);
         } catch (DateTimeParseException exception) {
-            throw new ShadowException("Invalid start or end date! " + EVENT_FORMAT);
+            throw new ShadowException(Messages.MESSAGE_INVALID_EVENT_DATE + Messages.MESSAGE_EVENT_FORMAT);
         }
     }
 
@@ -129,11 +127,11 @@ public class ShadowParser {
      */
     private static void validateSingleKeyword(int keywordCount, String details) throws ShadowException {
         if (details.isEmpty()) {
-            throw new ShadowException("Invalid request! Please provide a keyword for your find.\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_NO_KEYWORD);
         }
 
         if (keywordCount > 1) {
-            throw new ShadowException("Invalid request! Please provide only ONE keyword for your find.\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_MULTIPLE_KEYWORDS);
         }
     }
 
@@ -146,7 +144,8 @@ public class ShadowParser {
      */
     private static void validateNonEmptyRequest(String details, String taskType) throws ShadowException {
         if (details.isEmpty()) {
-            throw new ShadowException("Invalid request! Please provide a description for your " + taskType + ".\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND
+                    + String.format(Messages.MESSAGE_EMPTY_TASK_DESCRIPTION, taskType));
         }
     }
 
@@ -160,11 +159,11 @@ public class ShadowParser {
      */
     private static void validateUniqueMarkerPresence(String details, String marker, String msg) throws ShadowException {
         if (!details.contains(marker)) {
-            throw new ShadowException("Invalid format! " + msg);
+            throw new ShadowException(String.format(Messages.MESSAGE_INVALID_MARKER_FORMAT, msg));
         }
 
         if (details.indexOf(marker) != details.lastIndexOf(marker)) {
-            throw new ShadowException("Duplicate '" + marker + "' found! " + msg);
+            throw new ShadowException(String.format(Messages.MESSAGE_DUPLICATE_MARKERS, marker) + msg);
         }
     }
 
@@ -179,7 +178,7 @@ public class ShadowParser {
      */
     private static void validateNonEmptyDate(String[] data, int index, String type, String msg) throws ShadowException {
         if (data.length <= index || data[index].trim().isEmpty()) {
-            throw new ShadowException("Missing " + type + " date! " + msg);
+            throw new ShadowException(String.format(Messages.MESSAGE_EMPTY_TASK_DATE, type) + msg);
         }
     }
 
@@ -206,11 +205,11 @@ public class ShadowParser {
             LocalDateTime startDate = LocalDateTime.parse(timestamps[0], taskInputFormatter);
             LocalDateTime endDate = LocalDateTime.parse(timestamps[1], taskInputFormatter);
             if (endDate.isBefore(startDate)) {
-                throw new ShadowException("Invalid event dates! Start date must be before end date!\n");
+                throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_INVALID_DATE_RANGE);
             }
             return new String[] { startDate.format(taskOutputFormatter), endDate.format(taskOutputFormatter) };
         } else {
-            throw new IllegalArgumentException("validateAndFormatDateRange method expects only 1 or 2 timestamps!\n");
+            throw new IllegalArgumentException(Messages.MESSAGE_INVALID_TIMESTAMP_ARGUMENT_COUNT);
         }
     }
 
@@ -227,7 +226,7 @@ public class ShadowParser {
         try {
             return Integer.parseInt(index);
         } catch (NumberFormatException exception) {
-            throw new ShadowException("Invalid task index! Please provide a numeric index for your request!\n");
+            throw new ShadowException(Messages.PREFIX_UNKNOWN_COMMAND + Messages.MESSAGE_INVALID_TASK_INDEX);
         }
     }
 }
