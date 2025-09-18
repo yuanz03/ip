@@ -155,7 +155,7 @@ public class ShadowParserTest {
                     ShadowParser.parse("deadline buy book /by").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Missing due date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.",
+            assertEquals("Missing task date! Please use: deadline DESCRIPTION /by d/M/yyyy HHmm.",
                     exception.getMessage());
         }
     }
@@ -232,7 +232,7 @@ public class ShadowParserTest {
                     ShadowParser.parse("event meeting /from /to 5/7/2025 2100").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Missing start date! "
+            assertEquals("Missing task date! "
                     + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.", exception.getMessage());
         }
     }
@@ -244,7 +244,7 @@ public class ShadowParserTest {
                     ShadowParser.parse("event meeting /from 4/7/2025 1600 /to").commandType);
             fail();
         } catch (ShadowException exception) {
-            assertEquals("Missing end date! "
+            assertEquals("Missing task date! "
                     + "Please use: event DESCRIPTION /from d/M/yyyy HHmm /to d/M/yyyy HHmm.", exception.getMessage());
         }
     }

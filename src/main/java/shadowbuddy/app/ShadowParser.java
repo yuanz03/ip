@@ -55,12 +55,12 @@ public class ShadowParser {
             validateSingleKeyword(inputDetails.length - 1, requestDetails);
             return new ShadowCommand(ShadowCommand.CommandType.FIND, requestDetails);
         case "todo":
-            validateNonEmptyRequest(requestDetails, "todo");
+            validateNonEmptyRequest(requestDetails, requestType);
             return new ShadowCommand(ShadowCommand.CommandType.TODO, requestDetails);
         case "deadline":
-            return parseDeadline(requestDetails);
+            return parseDeadline(requestDetails, requestType);
         case "event":
-            return parseEvent(requestDetails);
+            return parseEvent(requestDetails, requestType);
         default:
             return new ShadowCommand(ShadowCommand.CommandType.UNKNOWN);
         }
@@ -72,16 +72,18 @@ public class ShadowParser {
      * and a due date in the format "d/M/yyyy HHmm".
      *
      * @param requestDetails The trailing input after the deadline keyword.
+     * @param taskType The type of the task being validated.
      * @return A ShadowCommand instance representing the Deadline details.
      * @throws ShadowException If the requestDetails is syntactically invalid.
      */
-    private static ShadowCommand parseDeadline(String requestDetails) throws ShadowException {
+    private static ShadowCommand parseDeadline(String requestDetails, String taskType) throws ShadowException {
         assert requestDetails != null : "deadline requestDetails should not be null";
-        validateNonEmptyRequest(requestDetails, "deadline");
+        assert taskType != null : "deadline taskType should not be null";
+        validateNonEmptyRequest(requestDetails, taskType);
         validateUniqueMarkerPresence(requestDetails, DEADLINE_MARKER, Messages.MESSAGE_DEADLINE_FORMAT);
 
         String[] deadlineDetails = requestDetails.split(DEADLINE_MARKER);
-        validateNonEmptyDate(deadlineDetails, 1, "due", Messages.MESSAGE_DEADLINE_FORMAT);
+        validateNonEmptyDate(deadlineDetails, 1, Messages.MESSAGE_DEADLINE_FORMAT);
 
         try {
             String formattedDueDate = validateAndFormatDateRange(deadlineDetails[1].trim())[0];
@@ -97,19 +99,21 @@ public class ShadowParser {
      * a start date in the format "d/M/yyyy HHmm", and an end date in the format "d/M/yyyy HHmm".
      *
      * @param requestDetails The trailing input after the event keyword.
+     * @param taskType The type of the task being validated.
      * @return A ShadowCommand instance representing the Event details.
      * @throws ShadowException If the requestDetails is syntactically invalid.
      */
-    private static ShadowCommand parseEvent(String requestDetails) throws ShadowException {
+    private static ShadowCommand parseEvent(String requestDetails, String taskType) throws ShadowException {
         assert requestDetails != null : "event requestDetails should not be null";
-        validateNonEmptyRequest(requestDetails, "event");
+        assert taskType != null : "event taskType should not be null";
+        validateNonEmptyRequest(requestDetails, taskType);
         validateUniqueMarkerPresence(requestDetails, EVENT_START_MARKER, Messages.MESSAGE_EVENT_FORMAT);
         validateUniqueMarkerPresence(requestDetails, EVENT_END_MARKER, Messages.MESSAGE_EVENT_FORMAT);
 
         String[] eventDetails = requestDetails.split(EVENT_START_MARKER);
         String[] eventTimings = eventDetails[1].split(EVENT_END_MARKER);
-        validateNonEmptyDate(eventTimings, 0, "start", Messages.MESSAGE_EVENT_FORMAT);
-        validateNonEmptyDate(eventTimings, 1, "end", Messages.MESSAGE_EVENT_FORMAT);
+        validateNonEmptyDate(eventTimings, 0, Messages.MESSAGE_EVENT_FORMAT);
+        validateNonEmptyDate(eventTimings, 1, Messages.MESSAGE_EVENT_FORMAT);
 
         try {
             String[] formattedDates = validateAndFormatDateRange(eventTimings[0].trim(), eventTimings[1].trim());
@@ -174,13 +178,12 @@ public class ShadowParser {
      *
      * @param data The parts of the task details separated by the date markers.
      * @param index The position in the array where the appropriate date should be found.
-     * @param type The type of the date being validated.
      * @param msg The error message to include in the exception thrown when the date is missing.
      * @throws ShadowException If the expected date is missing.
      */
-    private static void validateNonEmptyDate(String[] data, int index, String type, String msg) throws ShadowException {
+    private static void validateNonEmptyDate(String[] data, int index, String msg) throws ShadowException {
         if (data.length <= index || data[index].trim().isEmpty()) {
-            throw new ShadowException(String.format(Messages.MESSAGE_EMPTY_TASK_DATE, type) + msg);
+            throw new ShadowException(Messages.MESSAGE_EMPTY_TASK_DATE + msg);
         }
     }
 
