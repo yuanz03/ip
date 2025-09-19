@@ -116,4 +116,3 @@ Lists all matching tasks related to your keyword in the Shadow task list.
 
 ## Acknowledgements 📑
 - Shadow and user avatar images were sourced from this [website](https://www.cleanpng.com)
-- Chatbot background image was sourced from this [website](https://in.pinterest.com/thoungambalaishram67/emince-in-shadow/)

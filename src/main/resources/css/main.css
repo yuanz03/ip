@@ -1,7 +1,6 @@
 .root {
     main-color: linear-gradient(to bottom right, #1a0f2b, #3b0a45, #5c1c70);
     -fx-background-color: main-color;
-    -fx-background-image: url("../images/ChatbotBackground.jpg");
     -fx-background-size: 400px 600px;
     -fx-background-repeat: round;
 }
