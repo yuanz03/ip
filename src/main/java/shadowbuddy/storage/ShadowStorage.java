@@ -52,8 +52,8 @@ public class ShadowStorage {
 
         if (this.databaseFile.createNewFile()) {
             return isFolderCreated
-                    ? "The relevant folder did not exist! The database has now been created for you.\n"
-                    : "No task list found! A new one has been created for you.\n";
+                    ? "The relevant folder did not exist! The database has now been created for you."
+                    : "No task list found! A new one has been created for you.";
         } else {
             return "Here is your current task list: ";
         }
